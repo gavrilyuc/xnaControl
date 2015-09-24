@@ -1,0 +1,9 @@
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\bin\x86\Debug\demo.exe
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\bin\x86\Debug\demo.pdb
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\bin\x86\Debug\xnaControl.dll
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\bin\x86\Debug\xnaControl.pdb
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\obj\x86\Debug\demo.csprojResolveAssemblyReference.cache
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\obj\x86\Debug\demo.exe
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\obj\x86\Debug\demo.pdb
+C:\Users\root\Desktop\xnaControl\xnaControl\demo\demo\bin\x86\Debug\Content\Arial.xnb
