@@ -11,7 +11,7 @@ Such as:
 
 Author of realization: Dmitry Havryliuk
 
-All examples in the folder called: demo
+example in the folder called: demo
 
 P.S. I'm sorry, I badly taught in English.
 
@@ -27,4 +27,4 @@ GUI система которая реализована и готова к ис
 
 Автор реализации: Дмитрий Гаврилюк
 
-Все примеры находятся в папке: demo
+Пример находятся в папке: demo
