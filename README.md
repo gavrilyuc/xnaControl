@@ -1,0 +1,2 @@
+# xnaControl
+[XNA] Control Component
