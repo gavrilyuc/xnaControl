@@ -60,7 +60,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>example.Program</StartupObject>
+    <StartupObject>demo.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -86,9 +86,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\xnaControl\xnaControl.csproj">
+    <ProjectReference Include="..\..\xnaControl\Core.csproj">
       <Project>{cf8500c8-cb01-41dc-ad56-c3ed6fe44009}</Project>
-      <Name>xnaControl</Name>
+      <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\demoContent\demoContent.contentproj">
       <Project>{EB471974-229A-4BE4-80D6-046BC60AD00D}</Project>

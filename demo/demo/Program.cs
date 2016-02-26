@@ -1,7 +1,6 @@
 using Core.Base.Component;
-using System;
 
-namespace example
+namespace demo
 {
 #if WINDOWS
     static class Program

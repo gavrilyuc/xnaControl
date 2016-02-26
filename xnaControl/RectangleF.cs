@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Core
 {
@@ -11,11 +8,7 @@ namespace Core
         private float _x, _y, _x2, _y2;
         private float _width, _height;
 
-        public Rectangle toRectangle()
-        {
-            Rectangle myReturn = new Rectangle((int)_x, (int)_y, (int)_width, (int)_height);
-            return myReturn;
-        }
+        public Rectangle ToRectangle() => new Rectangle((int)_x, (int)_y, (int)_width, (int)_height);
 
         public RectangleF(float pX, float pY, float pWidth, float pHeight)
         {
@@ -32,23 +25,18 @@ namespace Core
         /// </summary>
         /// <param name="pPoint"></param>
         /// <returns></returns>
-        public bool Contains(Vector2 pPoint)
-        {
-            if ((pPoint.X >= this._x) && (pPoint.X <= this._x2) && (pPoint.Y >= this._y) && (pPoint.Y <= this._y2)) return true;
-            else return false;
-        }
+        public bool Contains(Vector2 pPoint) => (pPoint.X >= _x) && (pPoint.X <= _x2) && (pPoint.Y >= _y) && (pPoint.Y <= _y2);
+
         public RectangleF Union(RectangleF rect1, RectangleF rect2)
         {
-            RectangleF tempRect = new RectangleF();
-            if (rect1._x < rect2._x) tempRect._x = rect1._x;
-            else tempRect._x = rect2._x;
-            if (rect1._x2 > rect2._x2) tempRect._x2 = rect1._x2;
-            else tempRect._x2 = rect2._x2;
+            RectangleF tempRect = new RectangleF
+            {
+                _x = rect1._x < rect2._x ? rect1._x : rect2._x,
+                _x2 = rect1._x2 > rect2._x2 ? rect1._x2 : rect2._x2
+            };
             tempRect._width = tempRect._x2 - tempRect._x;
-            if (rect1._y < rect2._y) tempRect._y = rect1._y;
-            else tempRect._y = rect2._y;
-            if (rect1._y2 > rect2._y2) tempRect._y2 = rect1._y2;
-            else tempRect._y2 = rect2._y2;
+            tempRect._y = rect1._y < rect2._y ? rect1._y : rect2._y;
+            tempRect._y2 = rect1._y2 > rect2._y2 ? rect1._y2 : rect2._y2;
             tempRect._height = tempRect._y2 - tempRect._y;
             return tempRect;
         }
@@ -88,56 +76,21 @@ namespace Core
                 _y2 = _y + _height;
             }
         }
-        public float Right
-        {
-            get { return _x2; }
-        }
-        public float Bottom
-        {
-            get { return _y2; }
-        }
-        public RectangleF Clone()
-        {
-            RectangleF myReturn = new RectangleF(X, Y, Width, Height);
-            return myReturn;
-        }
-        public bool Intersets(RectangleF r)
-        {
-            return RectangleF.IsCollision(this, r);
-        }
-        public bool Intersets(Rectangle r)
-        {
-            return RectangleF.IsCollision(this, r.ConvertSingle());
-        }
-        internal static bool IsCollision(RectangleF r2, RectangleF r1)
-        {
-            bool myReturn = false;
+        public float Right => _x2;
+        public float Bottom => _y2;
+        public RectangleF Clone() => new RectangleF(X, Y, Width, Height);
+        public bool Intersets(RectangleF r) => IsCollision(this, r);
+        public bool Intersets(Rectangle r) => IsCollision(this, r.ConvertSingle());
+        internal static bool IsCollision(RectangleF r2, RectangleF r1) => (r1.X + r1.Width >= r2.X && r1.Y + r1.Height >= r2.Y && r1.X <= r2.X + r2.Width && r1.Y <= r2.Y + r2.Height);
+        public bool Equals(RectangleF other) => Math.Abs(other.X - X) < SingleTolerance && Math.Abs(other.Y - Y) < SingleTolerance &&
+                                                Math.Abs(Width - other.Width) < SingleTolerance &&
+                                                Math.Abs(Height - other.Height) < SingleTolerance;
+        public bool Equals(Rectangle other) => Math.Abs(other.X - X) < SingleTolerance && Math.Abs(other.Y - Y) < SingleTolerance &&
+                                               Math.Abs(Width - other.Width) < SingleTolerance &&
+                                               Math.Abs(Height - other.Height) < SingleTolerance;
+        public static RectangleF Empty => new RectangleF(0, 0, 0, 0);
 
-            if ((r1.X + r1.Width >= r2.X && r1.Y + r1.Height >= r2.Y && r1.X <= r2.X + r2.Width && r1.Y <= r2.Y + r2.Height))
-            {
-                myReturn = true;
-            }
-
-            return myReturn;
-        }
-
-        public bool Equals(RectangleF other)
-        {
-            if (other.X == this.X && other.Y == this.Y && this.Width == other.Width && this.Height == other.Height) return true;
-            return false;
-        }
-        public bool Equals(Rectangle other)
-        {
-            if (other.X == this.X && other.Y == this.Y && this.Width == other.Width && this.Height == other.Height) return true;
-            return false;
-        }
-        public static RectangleF Empty
-        {
-            get
-            {
-                return new RectangleF(0, 0, 0, 0);
-            }
-        }
+        public const float SingleTolerance = 0.0002f;// fix floatings equals...
     }
 
 }
