@@ -1,30 +1,10 @@
 # [XNA] Control Component
+GUI система Контролов для разработчиков проектов под XNA. Любителям WinForms контролов, почти все события были реализованы и готовы к использованию. Начиная с базового класса Control и заканчивая Button, TextBox, Panel, Label и т.д.
 
-# English
-GUI system which is implemented and ready to use, designed for use in their games, or for any projects that use XNA and would be too lazy in developing states and gui controls.
-Such as:
-1) Button.
-2) TextBox.
-3) Panel.
-4) Label.
-5) Control (a basic, the basic logic and without draw)
+К тому-же присутсвует реализация игровых состояний(GameState представляет из себя наследник от Control), в которых может быть свои контролы, такая реализация даёт возможность хранить свои контролы в своих состояниях и легкое переключение между состояниями используя лишь имя состояния.
 
-Author of realization: Dmitry Havryliuk
-
-example in the folder called: demo
-
-P.S. I'm sorry, I badly taught in English.
-
-# Русский
-GUI система которая реализована и готова к использованию, предназначена для использования в своих играх, или же для использования Любых проектов, которые используют XNA и хотели бы поленится в разработке состояний и gui контролов.
-
-Такие как:
-1) Button.
-2) TextBox.
-3) Panel.
-4) Label
-5) Control (базовый, с базовой логикой и без draw)
+А так-же реализована обёртка для графических 2D Элементов(class Graphics), который может рисовать стандартные примитивы(Круг, Прямоугольник, Квадрат, Pie, рисование по точкам и т.д.), что даёт возможность сделать свой контрол быстрее и меньше затрат на рессурсы.
 
 Автор реализации: Дмитрий Гаврилюк
 
-Пример находятся в папке: demo
+Пример находится в папке: demo
