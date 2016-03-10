@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Core.Base.Component.Controls;
-
-namespace Core.Base.Component
+﻿namespace Core.Base.Component.Controls
 {
+    using System;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
     /// <summary>
     /// Свойства Коретки
     /// </summary>
@@ -18,8 +13,8 @@ namespace Core.Base.Component
         public int Size;
         public Coretka(Color color, int size)
         {
-            this.Color = color;
-            this.Size = size;
+            Color = color;
+            Size = size;
         }
     }
 
@@ -28,165 +23,161 @@ namespace Core.Base.Component
     /// </summary>
     public class TextBox : Panel
     {
-        private const float ANIM_COLLDOWN = 0.5f;// Coretka Animation Change
-        private const float PRESED_CHECK = 0.1f;// Presed Checker Changer
-        private const float PRESED_CHECK_BEGIN = 0.8f;// Presed Checker Changer
+        private const float AnimColldown = 0.5f;// Coretka Animation Change
+        private const float PresedCheck = 0.1f;// Presed Checker Changer
+        private const float PresedCheckBegin = 0.8f;// Presed Checker Changer
 
-        private float anim_time = 0f, ticked = 0f, ticked_pres = 0f;
-        private bool is_press = false, is_plus = false;
-        private int position_coretka = 0;
-        private Coretka coretka;
+        private float _animTime, _ticked, _tickedPres;
+        private bool _isPress, _isPlus;
+        private int _positionCoretka;
+        private Coretka _coretka;
         public SpriteFont Font { get; set; }
         public string Text { get; set; }
         public Color ColorText { get; set; }
-        public Coretka CoretkaInfo { get { return coretka; } set { coretka = value; } }
+        public Coretka CoretkaInfo { get { return _coretka; } set { _coretka = value; } }
         public bool AutoSize { get; set; }
 
-        public TextBox(SpriteFont font) : base()
+        public TextBox(SpriteFont font)
         {
-            this.AutoSize = false;
-            this.Font = font;
-            this.Text = "";
-            this.ColorText = Color.Black;
-            this.Name = "TextBox::Control";
-            this.CoretkaInfo = new Coretka(Color.Red, 1);
+            AutoSize = false;
+            Font = font;
+            Text = "";
+            ColorText = Color.Black;
+            Name = "TextBox::Control";
+            CoretkaInfo = new Coretka(Color.Red, 1);
 
-            this.Paint += TextBox_Paint;
-            this.Invalidate += TextBox_Invalidate;
+            Paint += TextBox_Paint;
+            Invalidate += TextBox_Invalidate;
 
-            this.KeyDown += TextBox_KeyDown;
-            this.KeyUp += TextBox_KeyUp;
-            this.KeyPresed += TextBox_KeyPresed;
-            this.MouseDown += TextBox_MouseDown;
+            KeyDown += TextBox_KeyDown;
+            KeyUp += TextBox_KeyUp;
+            KeyPresed += TextBox_KeyPresed;
+            MouseDown += TextBox_MouseDown;
         }
 
         #region Event's
-        void TextBox_MouseDown(Control sender, MouseEventArgs e)
+        private void TextBox_MouseDown(Control sender, MouseEventArgs e)
         {
-            Vector2 pos = e.Coord - this.DrawabledLocation;
+            Vector2 pos = e.Coord - DrawabledLocation;
             char ch = '\0';
             Vector2 sz = Vector2.Zero;
-            int coretka_index = -1;
-            for (int i = 0; i < this.Text.Length; i++)
+            int coretkaIndex = -1;
+            for (int i = 0; i < Text.Length; i++)
             {
-                ch = this.Text[i];
-                sz += this.Font.MeasureString(ch.ToString());
-                if (pos.X > sz.X) coretka_index = i;
+                ch = Text[i];
+                sz += Font.MeasureString(ch.ToString());
+                if (pos.X > sz.X) coretkaIndex = i;
                 if (pos.X < sz.X) break;
             }
-            this.position_coretka = coretka_index + 1;
+            _positionCoretka = coretkaIndex + 1;
         }
-        void TextBox_KeyUp(Control sender, KeyEventArgs e)
+        private void TextBox_KeyUp(Control sender, KeyEventArgs e)
         {
-            is_press = false;
+            _isPress = false;
         }
-        void TextBox_KeyPresed(Control sender, KeyEventArgs e)
+        private void TextBox_KeyPresed(Control sender, KeyEventArgs e)
         {
-            bool is_ok_keys = false;
-            switch (e.KeyCode) { case Keys.Back: case Keys.Delete: case Keys.Left: case Keys.Right: is_ok_keys = true; break; }
-            if (e.KeyChar.Length >= 1 || is_ok_keys)
+            bool isOkKeys = false;
+            switch (e.KeyCode) { case Keys.Back: case Keys.Delete: case Keys.Left: case Keys.Right: isOkKeys = true; break; }
+            if (e.KeyChar.Length >= 1 || isOkKeys)
             {
-                ticked_pres += (float)e.GameTime.ElapsedGameTime.TotalSeconds;
-                if (ticked_pres >= PRESED_CHECK_BEGIN)
+                _tickedPres += (float)e.GameTime.ElapsedGameTime.TotalSeconds;
+                if (_tickedPres >= PresedCheckBegin)
                 {
-                    is_press = true;
-                    ticked_pres = 0f;
+                    _isPress = true;
+                    _tickedPres = 0f;
                     return;
                 }
-                ticked += (float)e.GameTime.ElapsedGameTime.TotalSeconds;
-                if (ticked >= PRESED_CHECK && is_press)
+                _ticked += (float)e.GameTime.ElapsedGameTime.TotalSeconds;
+                if (_ticked >= PresedCheck && _isPress)
                 {
                     TextBox_KeyDown(sender, e);
-                    ticked = 0f;
+                    _ticked = 0f;
                 }
             }
         }
-        void TextBox_KeyDown(Control sender, KeyEventArgs e)
+        private void TextBox_KeyDown(Control sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
-                case Keys.Left: this.position_coretka = Math.Max(this.position_coretka - 1, 0); break;
-                case Keys.Right: this.position_coretka = Math.Min(this.position_coretka + 1, this.Text.Length); break;
-                case Keys.Home: this.position_coretka = 0; break;
-                case Keys.End: this.position_coretka = this.Text.Length; break;
+                case Keys.Left: _positionCoretka = Math.Max(_positionCoretka - 1, 0); break;
+                case Keys.Right: _positionCoretka = Math.Min(_positionCoretka + 1, Text.Length); break;
+                case Keys.Home: _positionCoretka = 0; break;
+                case Keys.End: _positionCoretka = Text.Length; break;
                 #region Remove
                 case Keys.Delete:
                     {
-                        if (this.Text.Length >= 1 && this.Text.Length - this.position_coretka > 0)
-                            this.Text = this.Text.Remove(this.position_coretka, 1);
+                        if (Text.Length >= 1 && Text.Length - _positionCoretka > 0)
+                            Text = Text.Remove(_positionCoretka, 1);
                     } break;
                 case Keys.Back:
                     {
-                        if (this.Text.Length >= 1)
+                        if (Text.Length >= 1)
                         {
-                            if (this.position_coretka >= this.Text.Length)
+                            if (_positionCoretka >= Text.Length)
                             {
-                                this.Text = this.Text.Remove(this.Text.Length - 1);
-                                this.position_coretka--;
+                                Text = Text.Remove(Text.Length - 1);
+                                _positionCoretka--;
                             }
-                            else if (this.position_coretka >= 1)
+                            else if (_positionCoretka >= 1)
                             {
-                                this.Text = this.Text.Remove(this.position_coretka - 1, 1);
-                                this.position_coretka--;
+                                Text = Text.Remove(_positionCoretka - 1, 1);
+                                _positionCoretka--;
                             }
                         }
                     } break;
                 #endregion
                 default:
                     {
-                        if (e.KeyChar.Length >= 1) this.Text = this.Text.Insert(this.position_coretka++, e.KeyChar);
+                        if (e.KeyChar.Length >= 1) Text = Text.Insert(_positionCoretka++, e.KeyChar);
                     } break;
             }
-            ticked = 0f;
+            _ticked = 0f;
         }
-        void TextBox_Invalidate(Control sendred, TickEventArgs e)
+        private void TextBox_Invalidate(Control sendred, TickEventArgs e)
         {
-            if (this.AutoSize)
+            if (AutoSize)
             {
-                float f = (this.BorderLenght + 2 + this.Font.MeasureString(this.Text).Y);
-                if (this.Size.Y != f) this.Size = new Vector2(this.Size.X, f);
+                float f = (BorderLenght + 2 + Font.MeasureString(Text).Y);
+                if (Size.Y.CorrectEquals(f)) Size = new Vector2(Size.X, f);
             }
 
-            if (this.Focused)
+            if (!Focused) return;
+            _animTime += (float)e.GameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_animTime >= AnimColldown)
             {
-                anim_time += (float)e.GameTime.ElapsedGameTime.TotalMilliseconds;
-                if (anim_time >= ANIM_COLLDOWN)
-                {
-                    if (this.CoretkaInfo.Color.A == 0) is_plus = true;
-                    if (this.CoretkaInfo.Color.A >= 255) is_plus = false;
+                if (CoretkaInfo.Color.A == 0) _isPlus = true;
+                if (CoretkaInfo.Color.A >= 255) _isPlus = false;
 
-                    if (this.CoretkaInfo.Color.A > 0 && !is_plus) this.coretka.Color.A -= 10;
-                    if (is_plus && this.CoretkaInfo.Color.A <= 0) this.coretka.Color.A += 10;
-                }
+                if (CoretkaInfo.Color.A > 0 && !_isPlus) _coretka.Color.A -= 10;
+                if (_isPlus && CoretkaInfo.Color.A <= 0) _coretka.Color.A += 10;
             }
         }
         void TextBox_Paint(Control sendred, TickEventArgs e)
         {
-            if (this.Text != null && this.Font != null)
+            if (Text != null && Font != null)
             {
-                Vector2 sizeString = Vector2.Zero;
+                Vector2 sizeString;
                 char ch = '\0';
-                Vector2 beginDraw = this.DrawabledLocation;
+                Vector2 beginDraw = DrawabledLocation;
                 beginDraw.X += 3;
                 int i = 0;
-                for (; i < this.Text.Length; i++)
+                for (; i < Text.Length; i++)
                 {
-                    if (this.Focused && this.position_coretka == i)
+                    if (Focused && _positionCoretka == i)
                     {
-                        e.Graphics.FillRectangle(beginDraw, new Vector2(this.CoretkaInfo.Size, this.Size.Y), this.CoretkaInfo.Color);
-                        beginDraw.X += this.CoretkaInfo.Size + 1;
+                        e.Graphics.FillRectangle(beginDraw, new Vector2(CoretkaInfo.Size, Size.Y), CoretkaInfo.Color);
+                        beginDraw.X += CoretkaInfo.Size + 1;
                     }
 
-                    ch = this.Text[i];
-                    e.Graphics.DrawString(this.Font, ch.ToString(), beginDraw, this.ColorText);
-                    sizeString = this.Font.MeasureString(ch.ToString());
+                    ch = Text[i];
+                    e.Graphics.DrawString(Font, ch.ToString(), beginDraw, ColorText);
+                    sizeString = Font.MeasureString(ch.ToString());
                     beginDraw.X += sizeString.X;
                 }
-                if (this.Focused && this.position_coretka == i)
-                {
-                    e.Graphics.FillRectangle(beginDraw, new Vector2(this.CoretkaInfo.Size, this.Size.Y), this.CoretkaInfo.Color);
-                    beginDraw.X += this.CoretkaInfo.Size + 1;
-                }
+                if (!Focused || _positionCoretka != i) return;
+                e.Graphics.FillRectangle(beginDraw, new Vector2(CoretkaInfo.Size, Size.Y), CoretkaInfo.Color);
+                beginDraw.X += CoretkaInfo.Size + 1;
             }
         }
         #endregion

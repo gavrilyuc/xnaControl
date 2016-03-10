@@ -1,15 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Core.Base.Component.Controls;
-
-namespace Core.Base.Component
+﻿namespace Core.Base.Component.Controls
 {
-    class Label : Panel
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    public class Label : Panel
     {
         public SpriteFont Font { get; set; }
         public string Text { get; set; }
@@ -20,32 +13,28 @@ namespace Core.Base.Component
         {
             ColorText = Color.Black;
             Text = "Label::Control -> label";
-            this.Paint += Button_Paint;
-            this.Font = font;
-            this.AutoSize = false;
-            this.Invalidate += Button_Invalidate;
-            this.BackgroundColor = Color.Transparent;
-            this.BorderColor = Color.LightBlue;
-            this.BorderLenght = 1;
+            Paint += Button_Paint;
+            Font = font;
+            AutoSize = false;
+            Invalidate += Button_Invalidate;
+            BackgroundColor = Color.Transparent;
+            BorderColor = Color.LightBlue;
+            BorderLenght = 1;
         }
 
         void Button_Invalidate(Control sendred, TickEventArgs e)
         {
-            if (this.AutoSize)
-            {
-                var f = new Vector2(this.BorderLenght + 2, this.BorderLenght + 2) + this.Font.MeasureString(this.Text);
-                if (this.Size != f) this.Size = f;
-            }
+            if (!AutoSize) return;
+            var f = new Vector2(BorderLenght + 2, BorderLenght + 2) + Font.MeasureString(Text);
+            if (Size != f) Size = f;
         }
 
         void Button_Paint(Control sendred, TickEventArgs e)
         {
-            if (this.Text != null && this.Font != null && ColorText != Color.Transparent)
-            {
-                var v = Font.MeasureString(this.Text) / 2;
-                v = this.DrawabledLocation + (this.Size / 2) - v;
-                e.Graphics.DrawString(this.Font, this.Text, v, this.ColorText);
-            }
+            if (Text == null || Font == null || ColorText == Color.Transparent) return;
+            var v = Font.MeasureString(Text) / 2;
+            v = DrawabledLocation + (Size / 2) - v;
+            e.Graphics.DrawString(Font, Text, v, ColorText);
         }
     }
 }

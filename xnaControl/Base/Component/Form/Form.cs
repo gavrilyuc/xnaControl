@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Core.Base.Component.Controls;
+﻿using Core.Base.Component.Controls;
+using Core.Base.Component.Layout;
 using Core.Input;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace Core.Base.Component
+namespace Core.Base.Component.Form
 {
     public class Form : Game, IWindow
     {
@@ -34,17 +34,23 @@ namespace Core.Base.Component
         /// <summary>
         /// Список Контролов (В Основном используется для хранение Игровых Состояний)
         /// </summary>
-        public GridControls Controls { get; }
+        public IControlLayout Controls { get; }
 
         #region Constructor
         public Form(FormSettings settings)
         {
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            Controls = new GridControls(this);
+            Controls = new DefaultLayuout(this);
             _formcontrol = new Control(this) { Drawabled = true, Focused = true };
             Point screen;
-            screen.X = settings.ScreenSize.X > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : settings.ScreenSize.X;
-            screen.Y = settings.ScreenSize.Y > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height : settings.ScreenSize.Y;
+            screen.X = settings.ScreenSize.X
+                       > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width
+                ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width
+                : settings.ScreenSize.X;
+            screen.Y = settings.ScreenSize.Y
+                       > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
+                ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
+                : settings.ScreenSize.Y;
             Screen = screen;
             Content.RootDirectory = settings.ContentDirectory;
             GraphicsDeviceManager.IsFullScreen = !settings.Windowed;
@@ -92,7 +98,7 @@ namespace Core.Base.Component
         }
         protected override void Update(GameTime gameTime)
         {
-            InputManager.GetInstance.Update(gameTime);
+            PkInputManager.GetInstance.Update(gameTime);
             base.Update(gameTime);
             _formcontrol.Update(gameTime);// update Form.
             for (int i = Controls.Count - 1; i >= 0; i--) Controls[i].Update(gameTime);
@@ -100,20 +106,20 @@ namespace Core.Base.Component
         protected override void LoadContent()
         {
             Graphics2D = new Graphics(this.GraphicsDevice);
-            this.LoadResourses(null, new TickEventArgs(this, default(GameTime)));
+            LoadResourses(null, new TickEventArgs(this, default(GameTime)));
             base.LoadContent();
-            foreach (var ch in Controls) (ch as IContent)?.LoadContent(Content);
+            foreach (Control ch in Controls) (ch as IContent)?.LoadContent(Content);
         }
         protected override void UnloadContent()
         {
             base.UnloadContent();
-            foreach (var ch in this.Controls) (ch as IContent)?.UnloadContent();
+            foreach (Control ch in Controls) (ch as IContent)?.UnloadContent();
         }
         protected override void Initialize()
         {
             base.Initialize();
-            this.Load(null, new EventArgs());
-            foreach (var ch in this.Controls) (ch as IInicializator)?.Inicialize();
+            Load(null);
+            foreach (Control ch in Controls) (ch as IInicializator)?.Inicialize();
         }
         #endregion
 
@@ -121,7 +127,7 @@ namespace Core.Base.Component
         /// <summary>
         /// Метод Inicialize
         /// </summary>
-        public event ControlEventHandler Load = delegate { };
+        public event EventHandler Load = delegate { };
         /// <summary>
         /// Вызывается когда зажимается кнопка мыши в пределах формы
         /// </summary>

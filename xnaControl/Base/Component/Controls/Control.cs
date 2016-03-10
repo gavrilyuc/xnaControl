@@ -1,32 +1,33 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Core.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using Core.Base.Component.Layout;
 
 namespace Core.Base.Component.Controls
 {
     /// <summary>
     /// Базовый Объект Контрола
     /// </summary>
-    public class Control
+    public class Control : IControl
     {
         #region Variables
-
-        private bool _isDraged = false;
+        private bool _isDraged;
         private Vector2 _l, _s;
-        private bool _isInputMouse = false;
-        private bool _isEnabled = false;
-        private bool _isDrawabled = false;
+        private bool _isInputMouse;
+        private bool _isEnabled;
+        private bool _isDrawabled;
+        private Control _parentControl;
 
         private static Graphics _graphics;
         private static IWindow _window;
-        private static bool _isBlockedMouse = false;
-        private static bool _isBlockedKeyBoard = false;
-        private static bool _isClick = false;
-        private static Control _focus = null;
-        private static bool _isMouseDown = false;
-        private static readonly InputManager Input = InputManager.GetInstance;// Input (Mouse & KeyBoard) Manager.
+        private static bool _isBlockedMouse;
+        private static bool _isBlockedKeyBoard;
+        private static bool _isClick;
+        private static Control _focus;
+        private static bool _isMouseDown;
+        private static readonly PkInputManager Input = PkInputManager.GetInstance;// Input (Mouse & KeyBoard) Manager.
         #endregion
 
         #region Constructor
@@ -39,13 +40,29 @@ namespace Core.Base.Component.Controls
             if (Graphics == null) Graphics = window.Graphics2D;
             if (Window == null) Window = window;
         }
-
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
         public Control()
         {
-            Controls = new GridControls(this);
+            Controls = new DefaultLayuout(this);
+            MouseDown += Control_MouseDown;
+            MouseUp += Control_MouseUp;
+            MouseMove += Control_MouseMove;
+            Drawabled = true;
+            Enabled = true;
+            Focused = false;
+            Location = Vector2.Zero;
+            Size = Vector2.Zero;
+            Controls.ControlsAdded += Controls_ControlsAdded;
+        }
+        /// <summary>
+        /// Конструктор, с помощью которого можно установить свой кастомный контейнер для хранение внутрених контролов
+        /// </summary>
+        /// <param name="layout"></param>
+        public Control(IControlLayout layout)
+        {
+            Controls = layout;
             MouseDown += Control_MouseDown;
             MouseUp += Control_MouseUp;
             MouseMove += Control_MouseMove;
@@ -57,7 +74,7 @@ namespace Core.Base.Component.Controls
             Controls.ControlsAdded += Controls_ControlsAdded;
         }
         #endregion
-        
+
         #region Event's
         /// <summary>
         /// Задатие мыши на объекту
@@ -72,7 +89,7 @@ namespace Core.Base.Component.Controls
         /// </summary>
         public event MouseEventHandler MouseClick = delegate { };
         /// <summary>
-        /// 
+        /// Вызывается когда происходит зажатое движение мыши
         /// </summary>
         public event MouseEventHandler MouseDrag = delegate { };
         /// <summary>
@@ -119,6 +136,10 @@ namespace Core.Base.Component.Controls
         /// Вызывается когда изменяется позиция контрола
         /// </summary>
         public event EventHandler LocationChangeControl = delegate { };
+        /// <summary>
+        /// Вызывается когда изменяется контейнер у контрола
+        /// </summary>
+        public event EventHandler ParentChanged = delegate { };
         #endregion
 
         #region Realise Event's & XNA Methods
@@ -127,31 +148,29 @@ namespace Core.Base.Component.Controls
             _isBlockedMouse = false;
             _isBlockedKeyBoard = false;
             if (Drawabled == false) return;
-            Paint(this, new TickEventArgs(Window, gameTime));
+            OnPaint(new TickEventArgs(Window, gameTime));
             for (int i = 0; i < Controls.Count; i++) Controls[i].Draw(gameTime);
         }
         internal void Update(GameTime gameTime)
         {
             if (Enabled == false) return;
             Control item = null;
-
             for (int i = Controls.Count - 1; i >= 0; i--)
             {
                 item = Controls[i];
                 if (item.ParrentLocation != ParrentLocation) item.ParrentLocation = DrawabledLocation;
-
                 item.Enabled = Enabled;
                 item.Drawabled = Drawabled;
 
                 item.Update(gameTime);
             }
 
-            if (!_isBlockedMouse) Click(gameTime);
+            if (!_isBlockedMouse) Click();
             if (!_isBlockedKeyBoard) Key(gameTime);
 
-            Invalidate(this, new TickEventArgs(Window, gameTime));
+            OnInvalidate(new TickEventArgs(Window, gameTime));
         }
-        private void Click(GameTime gameTime)
+        private void Click()
         {
             if (_isBlockedMouse) return;
             Vector2 mouse = new Vector2(Input.MouseState.X, Input.MouseState.Y);
@@ -160,94 +179,48 @@ namespace Core.Base.Component.Controls
             MouseEventArgs eventArgs = new MouseEventArgs(MouseButton.Left, Input.LastMouseState, Input.MouseState);
             if (isInputPos)
             {
-                #region Mouse Down
                 if (Input.MouseDown(MouseButton.Left))
-                {
-                    MouseDown(this, eventArgs = new MouseEventArgs(MouseButton.Left, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = true;
-                }
+                    OnMouseDown(new MouseEventArgs(MouseButton.Left, Input.LastMouseState, Input.MouseState));
                 else if (Input.MouseDown(MouseButton.Right))
-                {
-                    MouseDown(this, eventArgs = new MouseEventArgs(MouseButton.Right, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = true;
-                }
+                    OnMouseDown(new MouseEventArgs(MouseButton.Right, Input.LastMouseState, Input.MouseState));
                 else if (Input.MouseDown(MouseButton.Midle))
-                {
-                    MouseDown(this, eventArgs = new MouseEventArgs(MouseButton.Midle, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = true;
-                }
-                #endregion
-                #region Mouse Up
+                    OnMouseDown(new MouseEventArgs(MouseButton.Midle, Input.LastMouseState, Input.MouseState));
                 else if (Input.MouseUp(MouseButton.Left) && _isMouseDown)
-                {
-                    MouseUp(this, eventArgs = new MouseEventArgs(MouseButton.Left, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = false;
-                }
+                    OnMouseUp(new MouseEventArgs(MouseButton.Left, Input.LastMouseState, Input.MouseState));
                 else if (Input.MouseUp(MouseButton.Right) && _isMouseDown)
-                {
-                    MouseUp(this, eventArgs = new MouseEventArgs(MouseButton.Right, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = false;
-                }
+                    OnMouseUp(new MouseEventArgs(MouseButton.Right, Input.LastMouseState, Input.MouseState));
                 else if (Input.MouseUp(MouseButton.Midle) && _isMouseDown)
-                {
-                    MouseUp(this, eventArgs = new MouseEventArgs(MouseButton.Midle, Input.LastMouseState, Input.MouseState));
-                    _isBlockedMouse = true; _isMouseDown = false;
-                }
-                #endregion
-                else if (prevMouse != mouse)
-                {
-                    MouseMove(this, eventArgs);
-                    _isBlockedMouse = true;
-                }
-                else if (!_isInputMouse)
-                {
-                    MouseInput(this, eventArgs);
-                    _isInputMouse = true;
-                    _isBlockedMouse = true;
-                }
-                if (Input.LastMouseState.ScrollWheelValue == Input.MouseState.ScrollWheelValue) return;
-                ScrollDelta(this, eventArgs);
-                _isBlockedMouse = true;
+                    OnMouseUp(new MouseEventArgs(MouseButton.Midle, Input.LastMouseState, Input.MouseState));
+                else if (prevMouse != mouse) OnMouseMove(eventArgs);
+                else if (!_isInputMouse) OnMouseInput(eventArgs);
+
+                if (Input.LastMouseState.ScrollWheelValue != Input.MouseState.ScrollWheelValue)
+                    OnScrollDelta(eventArgs);
             }
-            else if (_isInputMouse)
-            {
-                MouseLeave(this, eventArgs);
-                _isInputMouse = false;
-            }
+            else if (_isInputMouse) OnMouseLeave(eventArgs);
         }
         private void Key(GameTime gameTime)
         {
             if (_focus != this) return;
-            var toList = Input.LastKeyboardState.GetPressedKeys().ToList();
+            List<Keys> toList = Input.LastKeyboardState.GetPressedKeys().ToList();
             bool isShift = Input.KeyDown(Keys.LeftShift) || Input.KeyDown(Keys.RightShift);
-            foreach (var ch in Input.KeyboardState.GetPressedKeys())
+            foreach (Keys ch in Input.KeyboardState.GetPressedKeys())
             {
-                if (toList.IndexOf(ch) == -1)
-                {
-                    KeyDown(this, new KeyEventArgs(ch, KeyState.KeyDown, gameTime, isShift));
-                    _isBlockedKeyBoard = true;
-                }
-                else
-                {
-                    KeyPresed(this, new KeyEventArgs(ch, KeyState.KeyDown, gameTime, isShift));
-                    _isBlockedKeyBoard = true;
-                }
+                if (toList.IndexOf(ch) == -1) OnKeyDown(new KeyEventArgs(ch, KeyState.KeyDown, gameTime, isShift));
+                else OnKeyPresed(new KeyEventArgs(ch, KeyState.KeyDown, gameTime, isShift));
             }
             toList = Input.KeyboardState.GetPressedKeys().ToList();
-            foreach (var ch in Input.LastKeyboardState.GetPressedKeys().Where(ch => toList.IndexOf(ch) == -1))
-            {
-                KeyUp(this, new KeyEventArgs(ch, KeyState.KeyUp, gameTime, isShift));
-                _isBlockedKeyBoard = true;
-            }
+            foreach (Keys ch in Input.LastKeyboardState.GetPressedKeys().Where(ch => toList.IndexOf(ch) == -1))
+                OnKeyUp(new KeyEventArgs(ch, KeyState.KeyUp, gameTime, isShift));
         }
-        private void Controls_ControlsAdded(GridControls sender, GridEventArgs e)
+        private void Controls_ControlsAdded(DefaultLayuout sender, GridEventArgs e)
         {
             e.UtilizingControl.ParrentLocation = Location;
         }
         private void Control_MouseMove(Control sender, MouseEventArgs e)
         {
             if (_isDraged && Input.MouseState.X != Input.LastMouseState.X || Input.LastMouseState.Y != Input.MouseState.Y)
-                MouseDrag(this, e);
+                OnMouseDrag(e);
         }
         private void Control_MouseUp(Control sender, MouseEventArgs e)
         {
@@ -267,7 +240,11 @@ namespace Core.Base.Component.Controls
         }
         #endregion
 
-        #region Properties
+        #region Public Properties
+        /// <summary>
+        /// Родитель, который хранит текущий контрол
+        /// </summary>
+        public IControl Parent => ParentControl;
         /// <summary>
         /// Имя Контрола, Используется для распознавания Уникальных Контролов
         /// </summary>
@@ -275,7 +252,7 @@ namespace Core.Base.Component.Controls
         /// <summary>
         /// Контейнер для Контролов
         /// </summary>
-        public GridControls Controls { get; }
+        public IControlLayout Controls { get; }
         /// <summary>
         /// Позиция контрола
         /// </summary>
@@ -285,7 +262,7 @@ namespace Core.Base.Component.Controls
             set
             {
                 _l = value;
-                LocationChangeControl(this, new EventArgs());
+                LocationChangeControl(this);
             }
         }
         /// <summary>
@@ -297,7 +274,7 @@ namespace Core.Base.Component.Controls
             set
             {
                 _s = value;
-                ResizeControl(this, new EventArgs());
+                ResizeControl(this);
             }
         }
         private Vector2 ParrentLocation { get; set; }
@@ -368,6 +345,83 @@ namespace Core.Base.Component.Controls
         {
             get { return _window; }
             private set { _window = value; }
+        }
+        #endregion
+
+        #region Internal Properties
+        internal Control ParentControl
+        {
+            get { return _parentControl; }
+            set
+            {
+                _parentControl = value;
+                ParentChanged(this);
+            }
+        }
+        #endregion
+
+        #region Virtuals Events Methods
+        protected virtual void OnMouseDown(MouseEventArgs e)
+        {
+            MouseDown(this, e);
+            _isBlockedMouse = true;
+            _isMouseDown = true;
+        }
+        protected virtual void OnMouseUp(MouseEventArgs e)
+        {
+            MouseUp(this, e);
+            _isBlockedMouse = true;
+            _isMouseDown = false;
+        }
+        protected virtual void OnMouseMove(MouseEventArgs e)
+        {
+            MouseDown(this, e);
+            _isBlockedMouse = true;
+        }
+        protected virtual void OnMouseDrag(MouseEventArgs e)
+        {
+            MouseDrag(this, e);
+        }
+        protected virtual void OnMouseInput(MouseEventArgs e)
+        {
+            MouseInput(this, e);
+            _isInputMouse = true;
+            _isBlockedMouse = true;
+        }
+        protected virtual void OnMouseLeave(MouseEventArgs e)
+        {
+            MouseLeave(this, e);
+            _isInputMouse = false;
+        }
+        protected virtual void OnScrollDelta(MouseEventArgs e)
+        {
+            ScrollDelta(this, e);
+            _isBlockedMouse = true;
+        }
+
+        protected virtual void OnKeyDown(KeyEventArgs e)
+        {
+            KeyDown(this, e);
+            _isBlockedKeyBoard = true;
+        }
+        protected virtual void OnKeyUp(KeyEventArgs e)
+        {
+            KeyUp(this, e);
+            _isBlockedKeyBoard = true;
+        }
+        protected virtual void OnKeyPresed(KeyEventArgs e)
+        {
+            KeyPresed(this, e);
+            _isBlockedKeyBoard = true;
+        }
+
+        protected virtual void OnInvalidate(TickEventArgs e)
+        {
+            Invalidate(this, e);
+        }
+        protected virtual void OnPaint(TickEventArgs e)
+        {
+            Paint(this, e);
         }
         #endregion
     }

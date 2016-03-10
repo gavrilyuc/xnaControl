@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Core.Base.Component.Controls;
-
+using Core.Base.Component.Form;
 namespace Core.Base.Mehanic
 {
     public class ThreadEventArgs

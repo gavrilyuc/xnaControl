@@ -8,18 +8,22 @@ namespace Core
     {
         void Inicialize();
     }
+
     public interface IContent
     {
         void LoadContent(ContentManager content);
+
         void UnloadContent();
     }
 
     public interface IWindow
     {
         Graphics Graphics2D { get; }
+
         Point Screen { get; }
+
         GraphicsDevice GraphicsDevice { get; }
+
         ContentManager Content { get; }
     }
-
 }

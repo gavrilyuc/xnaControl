@@ -1,10 +1,12 @@
-using System;
 using Core;
 using Core.Base.Component;
 using Core.Base.Component.Controls;
 using Core.Base.Mehanic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
+using Core.Base.Component.Form;
+using Core.Input;
 
 namespace demo
 {
@@ -25,7 +27,7 @@ namespace demo
             MouseClick += Game1_MouseClick;
         }
 
-        private void Game1_Load(Control sender, EventArgs e)
+        private void Game1_Load(Control sender)
         {
             // Form Inicialize & Generate GUI
             // and Other Inicializator...
@@ -94,11 +96,15 @@ namespace demo
         {
             Window.Title = "[Panel] Mouse Click: " + (j++).ToString();
         }
+        private string f;
         private void Game1_Invalidate(Control sendred, TickEventArgs e)
         {
             var gameTime = e.GameTime;
             // Form Update
             // xna Method: Update
+
+            f = PkInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("", (s, ch) => s += ch.ToString());
+            Window.Title = f;
         }
         bool _isDrawing = false;
         void Game1_Paint(Control sendred, TickEventArgs e)

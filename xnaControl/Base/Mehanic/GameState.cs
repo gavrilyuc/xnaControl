@@ -1,17 +1,13 @@
-﻿using Core.Base.Component;
-using System.Linq;
+﻿using System.Linq;
 using Core.Base.Component.Controls;
+using Core.Base.Component.Form;
 
 namespace Core.Base.Mehanic
 {
-    public interface IGameState
-    {
-        string Name { get; }
-        void Show();
-    }
     public class GameState : Control, IGameState
     {
-        readonly Form _userForm;
+        private readonly Form _userForm;
+
         public GameState(Form form)
         {
             _userForm = form;
@@ -19,12 +15,11 @@ namespace Core.Base.Mehanic
             Drawabled = false;
             Name = "GameState::Control";
         }
+
         public virtual void Show()
         {
-            foreach (var state in _userForm.Controls.OfType<GameState>())
-            {
+            foreach (GameState state in _userForm.Controls.OfType<GameState>())
                 state.Hide();
-            }
             Enabled = true;
             Drawabled = true;
         }
@@ -33,9 +28,9 @@ namespace Core.Base.Mehanic
             Enabled = false;
             Drawabled = false;
         }
-        public void Change(string name)
+        public void Change(string gameStateName)
         {
-            (_userForm.Controls.FindFromName(name) as GameState)?.Show();
+            (_userForm.Controls.FindFromName(gameStateName) as GameState)?.Show();
         }
     }
 }

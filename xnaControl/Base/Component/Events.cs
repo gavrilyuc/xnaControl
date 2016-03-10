@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Core.Base.Component.Controls;
+using Core.Base.Component.Layout;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
-using System;
-using Core.Base.Component;
-using Core.Base.Component.Controls;
 
-namespace Core
+namespace Core.Base.Component
 {
     public enum MouseButton
     {
@@ -13,14 +13,13 @@ namespace Core
         Midle = 2,
         Right = 3
     }
-
     public enum KeyState
     {
         KeyDown = 1,
         KeyUp = 2
     }
 
-    public class MouseEventArgs : EventArgs
+    public class MouseEventArgs
     {
         public MouseEventArgs(MouseButton mb, MouseState prev, MouseState cur)
         {
@@ -30,39 +29,32 @@ namespace Core
             PrevState = prev;
             CurrentState = cur;
         }
-
         /// <summary>
         /// Предыдущее Состояние мыши
         /// </summary>
         public MouseState PrevState { get; }
-
         /// <summary>
         /// Текущее состояние мыши
         /// </summary>
         public MouseState CurrentState { get; }
-
         /// <summary>
         /// Состояние Колесико Мыши (Значение колесика)
         /// </summary>
-        public Single DeltaScroll { get; }
-
+        public float DeltaScroll { get; }
         /// <summary>
         /// Кнопка действия
         /// </summary>
-        public MouseButton Button { get; } = MouseButton.Left;
-
+        public MouseButton Button { get; }
         /// <summary>
         /// FLOAT : Координаты курсора
         /// </summary>
         public Vector2 Coord { get; }
-
         /// <summary>
         /// INT32 : Координаты курсора
         /// </summary>
         public Point PointCoord => new Point((int)Math.Round(Coord.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(Coord.Y, 0, MidpointRounding.AwayFromZero));
     }
-
-    public class KeyEventArgs : EventArgs
+    public class KeyEventArgs
     {
         public Keys KeyCode { get; }
         public KeyState KeyState { get; private set; }
@@ -149,7 +141,7 @@ namespace Core
             return key.ToString();
         }
     }
-    public class TickEventArgs : EventArgs
+    public class TickEventArgs
     {
         public Graphics Graphics => Window.Graphics2D;
         public IWindow Window { get; }
@@ -162,7 +154,7 @@ namespace Core
             GameTime = gameTime;
         }
     }
-    public class GridEventArgs : EventArgs
+    public class GridEventArgs
     {
         public Control UtilizingControl { get; set; }
         public GridEventArgs(Control control)
@@ -171,9 +163,9 @@ namespace Core
         }
     }
 
-    public delegate void ControlEventHandler(Control sender, EventArgs e);
+    public delegate void EventHandler(Control c);
     public delegate void MouseEventHandler(Control sender, MouseEventArgs e);
     public delegate void KeyEventHandler(Control sender, KeyEventArgs e);
     public delegate void TickEventHandler(Control sendred, TickEventArgs e);
-    public delegate void GridEventHandler(GridControls sender, GridEventArgs e);
+    public delegate void GridEventHandler(DefaultLayuout sender, GridEventArgs e);
 }

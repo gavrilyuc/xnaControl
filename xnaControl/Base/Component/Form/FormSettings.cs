@@ -10,10 +10,9 @@ namespace Core.Base.Component
     public class FormSettings
     {
         #region Only ALL Screen Sizer
-        [NonSerialized]
-        public static readonly Point[] ScreenPoints = new Point[] {
+        [NonSerialized] public static readonly Point[] ScreenPoints =
+        {
             new Point(640, 480), new Point(768, 480), new Point(800, 480),
-            
             new Point(800, 600), new Point(960, 540), new Point(960, 720), new Point(1152, 720),
             new Point(1152, 900), new Point(1366, 768), new Point(1280, 720), new Point(1280, 768),
             new Point(1280, 800), new Point(1280, 960), new Point(1280, 1024), new Point(1440, 900),
@@ -24,10 +23,15 @@ namespace Core.Base.Component
             new Point(2048, 1152), new Point(2048, 1280), new Point(2538, 1080), new Point(2880, 900)
         };
         #endregion
+
         public Point ScreenSize { get; set; }
-        public Boolean Windowed { get; set; }
-        public Boolean WindowMouseView { get; set; }
-        public String ContentDirectory { get; set; }
+
+        public bool Windowed { get; set; }
+
+        public bool WindowMouseView { get; set; }
+
+        public string ContentDirectory { get; set; }
+
         public FormSettings()
         {
             ContentDirectory = "Content";
