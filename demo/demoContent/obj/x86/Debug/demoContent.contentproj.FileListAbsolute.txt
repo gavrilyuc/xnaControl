@@ -1,3 +1,4 @@
 C:\Users\root\Desktop\xnaControl\xnaControl\demo\demoContent\obj\x86\Debug\demoContent.contentprojResolveAssemblyReference.cache
 C:\Users\pr074048\Desktop\xnaControl-master\demo\demoContent\obj\x86\Debug\demoContent.contentprojResolveAssemblyReference.cache
 C:\Users\pr074048\Desktop\control-Core\demo\demoContent\obj\x86\Debug\demoContent.contentprojResolveAssemblyReference.cache
+D:\Project\xnaControl\demo\demoContent\obj\x86\Debug\demoContent.contentprojResolveAssemblyReference.cache

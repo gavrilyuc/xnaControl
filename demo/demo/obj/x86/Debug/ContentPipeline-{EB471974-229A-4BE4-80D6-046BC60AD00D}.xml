@@ -7,7 +7,7 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\pr074048\Desktop\control-Core\demo\demo\bin\x86\Debug\Content\Arial.xnb</Output>
+      <Output>D:\Project\xnaControl\demo\demo\bin\x86\Debug\Content\Arial.xnb</Output>
       <Time>2015-09-24T02:31:28+03:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
@@ -17,10 +17,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\pr074048\Desktop\control-Core\demo\demoContent\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\pr074048\Desktop\control-Core\demo\demo\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\pr074048\Desktop\control-Core\demo\demo\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\pr074048\Desktop\control-Core\demo\demo\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>D:\Project\xnaControl\demo\demoContent\</RootDirectory>
+      <LoggerRootDirectory>D:\Project\xnaControl\demo\demo\</LoggerRootDirectory>
+      <IntermediateDirectory>D:\Project\xnaControl\demo\demo\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>D:\Project\xnaControl\demo\demo\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

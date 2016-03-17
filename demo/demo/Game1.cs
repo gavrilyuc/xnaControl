@@ -1,21 +1,26 @@
-using Core;
-using Core.Base.Component;
-using Core.Base.Component.Controls;
-using Core.Base.Mehanic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
-using Core.Base.Component.Form;
-using Core.Input;
+
+using FormControl;
+using FormControl.Component;
+using FormControl.Component.Controls;
+using FormControl.Component.Form;
+using FormControl.Drawing.Brushes;
+using FormControl.Input;
+using FormControl.Mehanic;
 
 namespace demo
 {
     public class Game1 : Form
     {
-        Panel _p;
-        Button _b;
-        TextBox _textBox;
-        SpriteFont _baseFont;
+        private FpsControl fps;
+
+        private Panel _p;
+        private Button _b;
+        private TextBox _textBox;
+        private SpriteFont _baseFont;
+
         public Game1(FormSettings settings) : base(settings)
         {
             // Form Constructor
@@ -32,28 +37,37 @@ namespace demo
             // Form Inicialize & Generate GUI
             // and Other Inicializator...
             // xna method: Inicialize
+            fps = new FpsControl(_baseFont);
 
             _p = new Panel() {
                 Location = new Vector2(200, 100),
-                Size = new Vector2(400, 300)
+                Size = new Vector2(400, 300),
+                Background = new SolidColorBrush(Color.White),
+                BorderBrush = new DefaultBorderBrush(1, Color.Blue)
             };
-            _b = new Button(_baseFont) {
+            DefaultTextBrush defaultBrush = new DefaultTextBrush(_baseFont, Color.Black);
+            _b = new Button(defaultBrush) {
                 Location = new Vector2(10, 10),
                 Size = new Vector2(150, 40),
-                Text = "Template Button",
+                Text = "TMP Button",
                 ColorText = Color.Black,
+                Background = new SolidColorBrush(Color.White),
+                BorderBrush = new DefaultBorderBrush(1, Color.Black),
                 Name = "Super Button"
             };
             _p.Controls.Add(_b);
-            _textBox = new TextBox(_baseFont) {
-                IsBorder = true,
-                Name = "Super TextBox",
-                Location = new Vector2(500, 50),
-                Size = new Vector2(250, 30)
-            };
 
-            _b.MouseClick += b_MouseClick;
-            _p.MouseClick += p_MouseClick;
+            _b.Click += b_MouseClick;
+            _p.Click += p_MouseClick;
+
+            _textBox = new TextBox(new DefaultTextBrush(_baseFont, Color.Purple)) {
+                AutoSize = false,
+                BorderBrush = new DefaultBorderBrush(1, Color.Lime),
+                Background = new SolidColorBrush(Color.Silver),
+                Location = new Vector2(250, 250),
+                Size = new Vector2(100, 30),
+                MaxLenght = 13
+            };
 
             // Loadding Screen (Only Game-State)
             LoadingScreen l = new LoadingScreen(this, _baseFont) {
@@ -66,6 +80,7 @@ namespace demo
                 }),
                 NextState = "main"// Name to Next State
             };
+
             // Create Game State
             GameState state = new GameState(this) { Name = "main" };
             state.Controls.Add(_p);// Add Controls for Game State
@@ -96,27 +111,35 @@ namespace demo
         {
             Window.Title = "[Panel] Mouse Click: " + (j++).ToString();
         }
-        private string f;
+
+        private string _keyPresedsDraw;
+        private const string Separator = " + ";
         private void Game1_Invalidate(Control sendred, TickEventArgs e)
         {
-            var gameTime = e.GameTime;
+            GameTime gameTime = e.GameTime;
+            fps.Update(gameTime);
             // Form Update
             // xna Method: Update
+            string tmp = PkInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("You Key Down: ",
+                (current, key) => current + (key + Separator));
+            tmp = tmp.TrimEnd(Separator);
+            
+            if (tmp == string.Empty) tmp = "hi! I showed downed keys";
 
-            f = PkInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("", (s, ch) => s += ch.ToString());
-            Window.Title = f;
+            _keyPresedsDraw = tmp;
         }
-        bool _isDrawing = false;
-        void Game1_Paint(Control sendred, TickEventArgs e)
+
+        private bool _isDrawing;
+        private void Game1_Paint(Control sendred, TickEventArgs e)
         {
-            GraphicsDevice.Clear(Color.Black);
             // Form Paint
-            var graphics = e.Graphics;
-            if (_isDrawing)
-            {
-                graphics.DrawRectangle(new Rectangle(50, 50, 200, 200), Color.Red, 3f);
-            }
+            Graphics graphics = e.Graphics;
+            fps.Draw(graphics, e.GameTime);
+
+            if (!_isDrawing) return;
+            graphics.DrawRectangle(new Rectangle(50, 50, 200, 200), Color.Red, 3f);
+            graphics.DrawString(_baseFont, _keyPresedsDraw, new Vector2(70, 70), Color.Lime);
         }
     }
-
 }
+

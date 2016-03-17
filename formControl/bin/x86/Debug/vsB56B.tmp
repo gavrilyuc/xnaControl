@@ -1,0 +1,1821 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>formControl</name>
+    </assembly>
+    <members>
+        <member name="T:FormControl.Base.Component.Controls.Control">
+            <summary>
+            Базовый Объект Контрола
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.#ctor(FormControl.IWindow,FormControl.Base.Component.Layout.IControlLayout)">
+            <summary>
+            Констрктор для Базовой Инициализации
+            </summary>
+            <param name="window">Окно в котором будут Отображаться Контролы</param>
+            <param name="layout"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.#ctor">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.#ctor(FormControl.Base.Component.Layout.IControlLayout)">
+            <summary>
+            Конструктор, с помощью которого можно установить свой кастомный контейнер для хранение внутрених контролов
+            </summary>
+            <param name="layout"></param>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseDown">
+            <summary>
+            Задатие мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseUp">
+            <summary>
+            Отпускание мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseClick">
+            <summary>
+            Нажатие мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseDrag">
+            <summary>
+            Вызывается когда происходит зажатое движение мыши
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseMove">
+            <summary>
+            Движение мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseInput">
+            <summary>
+            Вхождение мыши в Объект
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.MouseLeave">
+            <summary>
+            Выход мыши из Объекта
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.ScrollDelta">
+            <summary>
+            Скроллинг мыши (Колесико)
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.KeyDown">
+            <summary>
+            Нажатие Кнопки
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.KeyUp">
+            <summary>
+            Отпускание Кнопки
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.KeyPresed">
+            <summary>
+            Вызывается когда Кнопка зажата(и не отпускается)
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.Paint">
+            <summary>
+            Вызывается вместе с методом Draw
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.Invalidate">
+            <summary>
+            Вызывается вместе с Методом Update
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.ResizeControl">
+            <summary>
+            Вызывается когда изменяется размеры контрола
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.LocationChangeControl">
+            <summary>
+            Вызывается когда изменяется позиция контрола
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Controls.Control.ParentChanged">
+            <summary>
+            Вызывается когда изменяется контейнер у контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Parent">
+            <summary>
+            Родитель, который хранит текущий контрол
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Name">
+            <summary>
+            Имя Контрола, Используется для распознавания Уникальных Контролов
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Controls">
+            <summary>
+            Контейнер для Контролов
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Location">
+            <summary>
+            Позиция контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Size">
+            <summary>
+            Размеры контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.DrawabledLocation">
+            <summary>
+            Корректые координаты контрола, относительно окна
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.ClientRectangle">
+            <summary>
+            Глобальная Клиенская область контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.ClientSize">
+            <summary>
+            Клиенская область контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Focused">
+            <summary>
+            Ли данный Контрол Содержит Фокус пользователя.
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Drawabled">
+            <summary>
+            Ли должен рисоваться данный Объект
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Enabled">
+            <summary>
+            Должны Ли Обрабатываться События Контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Tag">
+            <summary>
+            Пользовательское Свойство, для хранение пользовательских Данных
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Graphics">
+            <summary>
+            Объект Графики, для рисования
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Control.Window">
+            <summary>
+            Форма, в которой находится контрол
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseDown(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат нажатия кнопки мыши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseUp(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат отпускания кнопки мыши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseMove(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат движения мыши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseDrag(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат движение мыши с зажатой кнопкой мыши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseInput(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат входа мыши в контрол
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnMouseLeave(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат выхода мыши из контрола
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnScrollDelta(FormControl.Base.Component.MouseEventArgs)">
+            <summary>
+            Вызывает делегат колесика
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnKeyDown(FormControl.Base.Component.KeyEventArgs)">
+            <summary>
+            Вызывает делегат нажатия клавиши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnKeyUp(FormControl.Base.Component.KeyEventArgs)">
+            <summary>
+            Вызывает делегат отпускания клавиши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnKeyPresed(FormControl.Base.Component.KeyEventArgs)">
+            <summary>
+            Вызывает делегат зажатия клавиши
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnInvalidate(FormControl.Base.Component.TickEventArgs)">
+            <summary>
+            Вызывает делегат Обновления кадра Контрола
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Control.OnPaint(FormControl.Base.Component.TickEventArgs)">
+            <summary>
+            Вызывает делегат Отрисовки кадра Контрола
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Controls.Button">
+            <summary>
+            Представление Кнопки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Button.Font">
+            <summary>
+            Шрифт
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Button.Text">
+            <summary>
+            Тект кнопки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Button.ColorText">
+            <summary>
+            Цвет Текста
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Button.AutoSize">
+            <summary>
+            Автоматически определять размер кнопки
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Button.#ctor(Microsoft.Xna.Framework.Graphics.SpriteFont)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="font"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Controls.Label">
+            <summary>
+            Текстовый Блок
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Label.Font">
+            <summary>
+            Шрифт
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Label.Text">
+            <summary>
+            Текс
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Label.ColorText">
+            <summary>
+            Цвет текста
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Label.AutoSize">
+            <summary>
+            Автоматически определять размер кнопки
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Label.#ctor(Microsoft.Xna.Framework.Graphics.SpriteFont)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="font"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Controls.Panel">
+            <summary>
+            Панель
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Panel.BorderLenght">
+            <summary>
+            Размер Рамки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Panel.IsBorder">
+            <summary>
+            Ли рисовать Рамку вокруг Панели ?
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Panel.BorderColor">
+            <summary>
+            Цвет Рамки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Panel.BackGroundTexture">
+            <summary>
+            Текстура Заднего Фона
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.Panel.BackgroundColor">
+            <summary>
+            Цвет Задрего Фона
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Panel.#ctor">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.Controls.Coretka">
+            <summary>
+            Свойства Коретки
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.Controls.Coretka.Color">
+            <summary>
+            Цвет коретки
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.Controls.Coretka.Size">
+            <summary>
+            Размер коретки
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.Coretka.#ctor(Microsoft.Xna.Framework.Color,System.Int32)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="color"></param>
+            <param name="size"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Controls.TextBox">
+            <summary>
+            Текстовое Поле
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.TextBox.Font">
+            <summary>
+            Шрифт
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.TextBox.Text">
+            <summary>
+            Текст
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.TextBox.ColorText">
+            <summary>
+            Цвет текста
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.TextBox.CoretkaInfo">
+            <summary>
+            Свойства коретки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Controls.TextBox.AutoSize">
+            <summary>
+            Автоматически определять размер кнопки
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Controls.TextBox.#ctor(Microsoft.Xna.Framework.Graphics.SpriteFont)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="font"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.IControl">
+            <summary>
+            Представление контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.IControl.Name">
+            <summary>
+            Имя контрола
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.IControl.Controls">
+            <summary>
+            Контейнер
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.IControl.Enabled">
+            <summary>
+            Реагирует на события
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.IControl.Drawabled">
+            <summary>
+            Рисовать контрол
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.IControl.Parent">
+            <summary>
+            Родитель
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseDown">
+            <summary>
+            Задатие мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseUp">
+            <summary>
+            Отпускание мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseClick">
+            <summary>
+            Нажатие мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseDrag">
+            <summary>
+            Вызывается когда происходит зажатое движение мыши
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseMove">
+            <summary>
+            Движение мыши на объекту
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseInput">
+            <summary>
+            Вхождение мыши в Объект
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.MouseLeave">
+            <summary>
+            Выход мыши из Объекта
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.ScrollDelta">
+            <summary>
+            Скроллинг мыши (Колесико)
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.KeyDown">
+            <summary>
+            Нажатие Кнопки
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.KeyUp">
+            <summary>
+            Отпускание Кнопки
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.KeyPresed">
+            <summary>
+            Вызывается когда Кнопка зажата(и не отпускается)
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.Paint">
+            <summary>
+            Вызывается вместе с методом Draw
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.Invalidate">
+            <summary>
+            Вызывается вместе с Методом Update
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.ResizeControl">
+            <summary>
+            Вызывается когда изменяется размеры контрола
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.LocationChangeControl">
+            <summary>
+            Вызывается когда изменяется позиция контрола
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.IControl.ParentChanged">
+            <summary>
+            Вызывается когда изменяется контейнер у контрола
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.ITransformation">
+            <summary>
+            Представление объекта, который умеет трансформироваться в пространстве
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.ITransformation.Location">
+            <summary>
+            Позиция
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.ITransformation.Size">
+            <summary>
+            Размеры
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.ITransformation.ClientSize">
+            <summary>
+            Прямоугольный срез.
+            Внимание всегда X = Y = 0
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.Layout.ILayout`1">
+            <summary>
+            Представляет Объект как Контейнер чего-то
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.ILayout`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            множественое добавление
+            </summary>
+            <param name="listControls"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.ILayout`1.RemoveRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Множественое удаление
+            </summary>
+            <param name="listControls"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.ILayout`1.Remove(System.Int32)">
+            <summary>
+            Удалить
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="E:FormControl.Base.Component.Layout.ILayout`1.ControlsAdded">
+            <summary>
+            Событие добавление контрола
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Layout.ILayout`1.ControlsRemoved">
+            <summary>
+            Событие удаление контрола
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.Layout.IControlLayout">
+            <summary>
+            Представляет Объект как Контейнер контролов
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.IControlLayout.FindFromName(System.String)">
+            <summary>
+            Поиск контролов по имени
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="P:FormControl.Base.Component.Layout.IControlLayout.Item(System.String)">
+            <summary>
+            Индексатор по имени
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:FormControl.Base.Component.Layout.ProcentLayout">
+            <summary>
+            Контейнер процентного Соотношения.
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.ProcentLayout.#ctor(FormControl.Base.Component.ITransformation)">
+            <summary>
+            
+            </summary>
+            <param name="container"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.ProcentLayout.Add(FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Добавить контрол
+            </summary>
+            <param name="control"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Layout.DefaultLayuout">
+            <summary>
+            Контейнер для хранение Контролов.
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Layout.DefaultLayuout.ControlsAdded">
+            <summary>
+            Вызывается когда происходит Добавления контрола в Grid.
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Layout.DefaultLayuout.ControlsRemoved">
+            <summary>
+            Вызывается когда происходит Удаления контрола из Grid.
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Add(FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Добавить Контрол в Grid.
+            </summary>
+            <param name="control"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Clear">
+            <summary>
+            Очистить
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Contains(FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Существует ли данный контрол в контейнере
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.CopyTo(FormControl.Base.Component.Controls.Control[],System.Int32)">
+            <summary>
+            Скопировать массив в контейнер
+            </summary>
+            <param name="array"></param>
+            <param name="arrayIndex"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.AddRange(System.Collections.Generic.IEnumerable{FormControl.Base.Component.Controls.Control})">
+            <summary>
+            Добавить список Контролов в Grid.
+            </summary>
+            <param name="listControls"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Remove(System.Int32)">
+            <summary>
+            Удалить Контрол, зная его индекс
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.RemoveRange(System.Collections.Generic.IEnumerable{FormControl.Base.Component.Controls.Control})">
+            <summary>
+            Удалить список контролов из контейнера
+            </summary>
+            <param name="listControls"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Remove(FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Удалить контрол
+            </summary>
+            <param name="control"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.IndexOf(FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Поиск индекса контрола в текущем контейнере
+            </summary>
+            <param name="control"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.Insert(System.Int32,FormControl.Base.Component.Controls.Control)">
+            <summary>
+            Вставить контрол
+            </summary>
+            <param name="index"></param>
+            <param name="item"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.RemoveAt(System.Int32)">
+            <summary>
+            Удалить всё начиная с индекса
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.FindFromName(System.String)">
+            <summary>
+            Поиск контрола по имени.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="P:FormControl.Base.Component.Layout.DefaultLayuout.Item(System.Int32)">
+            <summary>
+            Индексатор по Индексу
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="P:FormControl.Base.Component.Layout.DefaultLayuout.Item(System.String)">
+            <summary>
+            Индексатор по именам контролов
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Base.Component.Layout.DefaultLayuout.GetEnumerator">
+            <summary></summary><returns></returns>
+        </member>
+        <member name="P:FormControl.Base.Component.Layout.DefaultLayuout.Count">
+            <summary>
+            Количество контролов
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Layout.DefaultLayuout.IsReadOnly">
+            <summary></summary>
+        </member>
+        <member name="T:FormControl.Base.Component.MouseButton">
+            <summary>
+            Тип кнопки мыши
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.MouseButton.Left">
+            <summary>
+            Левая кнопка
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.MouseButton.Midle">
+            <summary>
+            Центральна кнопка (нажатие колесика)
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.MouseButton.Right">
+            <summary>
+            правая кнопка
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.KeyState">
+            <summary>
+            Состояние кнопки
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.KeyState.KeyDown">
+            <summary>
+            Нажатая кнопка
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.KeyState.KeyUp">
+            <summary>
+            Отпущеная кнопка
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.MouseEventArgs">
+            <summary>
+            Представляет структуру параметров для событий мышки
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.MouseEventArgs.#ctor(FormControl.Base.Component.MouseButton,Microsoft.Xna.Framework.Input.MouseState,Microsoft.Xna.Framework.Input.MouseState,Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            конструктор по умолчанию
+            </summary>
+            <param name="mb"></param>
+            <param name="prev"></param>
+            <param name="cur"></param>
+            <param name="gameTime"></param>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.GameTime">
+            <summary>
+            Игровое время которое прошло с момента последнего обновления кадра
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.PrevState">
+            <summary>
+            Предыдущее Состояние мыши
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.CurrentState">
+            <summary>
+            Текущее состояние мыши
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.DeltaScroll">
+            <summary>
+            Состояние Колесико Мыши (Значение колесика)
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.Button">
+            <summary>
+            Кнопка действия
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.Coord">
+            <summary>
+            FLOAT : Координаты курсора
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.MouseEventArgs.PointCoord">
+            <summary>
+            INT32 : Координаты курсора
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.KeyEventArgs">
+            <summary>
+            Представляет структуру параметров для событий клавиатуры
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.KeyEventArgs.KeyCode">
+            <summary>
+            нажатая клавиша
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.KeyEventArgs.KeyState">
+            <summary>
+            Состояние клавишы
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.KeyEventArgs.KeyChar">
+            <summary>
+            клавиша в строковом виде
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.KeyEventArgs.GameTime">
+            <summary>
+            Игровое время которое прошло с момента последнего обновления кадра
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.KeyEventArgs.#ctor(Microsoft.Xna.Framework.Input.Keys,FormControl.Base.Component.KeyState,Microsoft.Xna.Framework.GameTime,System.Boolean)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="keyCode"></param>
+            <param name="keyState"></param>
+            <param name="gameTime"></param>
+            <param name="is_shift"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.TickEventArgs">
+            <summary>
+            Представляет структуру параметров для событий обновления
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.TickEventArgs.Graphics">
+            <summary>
+            Объект графики
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.TickEventArgs.Window">
+            <summary>
+            Окно в котором происходит обновление
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.TickEventArgs.GameTime">
+            <summary>
+            Игровое время которое прошло с момента последнего обновления кадра
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.TickEventArgs.ContentManager">
+            <summary>
+            Менеджер контента
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.TickEventArgs.#ctor(FormControl.IWindow,Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="window"></param>
+            <param name="gameTime"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.EventHandler">
+            <summary>
+            Делегат событий контрола
+            </summary>
+            <param name="sender"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.MouseEventHandler">
+            <summary>
+            Делегат событий мыши на контроле
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.KeyEventHandler">
+            <summary>
+            Делегат событий клавиатуры на контроле
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.TickEventHandler">
+            <summary>
+            Делегат событий обновления на контроле
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.GridEventHandler">
+            <summary>
+            Делегат событий контейнера контролов
+            </summary>
+            <param name="sender"></param>
+            <param name="utilizingControl"></param>
+        </member>
+        <member name="T:FormControl.Base.Component.Form.FormSettings">
+            <summary>
+            Настройки формы
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.Form.FormSettings.ScreenPoints">
+            <summary>
+            Все возможные размеры для формы
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.FormSettings.ScreenSize">
+            <summary>
+            Размер формы
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.FormSettings.Windowed">
+            <summary>
+            Оконный режим
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.FormSettings.WindowMouseView">
+            <summary>
+            Показывать курсор мыши
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.FormSettings.ContentDirectory">
+            <summary>
+            Имя директории с контентом
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.FormSettings.#ctor">
+            <summary>
+            Конструкетор по умолчанию
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Component.Form.Form">
+            <summary>
+            Форма
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.AplyScreenSize">
+            <summary>
+            Применить Изменения Расширения Экрана
+            </summary>
+        </member>
+        <member name="F:FormControl.Base.Component.Form.Form.GraphicsDeviceManager">
+            <summary>
+            Девайс Менеджер (в шаблоне XNA в классе Game1 -> graphics)
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.Form.Graphics2D">
+            <summary>
+            Образец, для рисование 2D Объектов на Экране
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.Form.Screen">
+            <summary>
+            Размеры Окна
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Component.Form.Form.Controls">
+            <summary>
+            Список Контролов (В Основном используется для хранение Игровых Состояний)
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.#ctor(FormControl.Base.Component.Form.FormSettings)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="settings"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.#ctor(FormControl.Base.Component.Form.FormSettings,FormControl.Base.Component.Layout.IControlLayout)">
+            <summary>
+            Конструктор по умолчанию с указанием Определёного Контейнера
+            </summary>
+            <param name="settings"></param>
+            <param name="layoutControl"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.Draw(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Отрисовка формы
+            </summary>
+            <param name="gameTime"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.Update(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Обновленгия кадра формы
+            </summary>
+            <param name="gameTime"></param>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.LoadContent">
+            <summary>
+            Загрузка контента формы
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.UnloadContent">
+            <summary>
+            Выгрузка контента формы
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Component.Form.Form.Initialize">
+            <summary>
+            Инициализация Формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.Load">
+            <summary>
+            Метод Inicialize
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.MouseDown">
+            <summary>
+            Вызывается когда зажимается кнопка мыши в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.MouseUp">
+            <summary>
+            Вызывается когда отпускается кнопка мыши в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.MouseClick">
+            <summary>
+            Вызывается когда происходит Нажатие и Отпускание мыши в пределах формы (Клик мышкой)
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.MouseDrag">
+            <summary>
+            Вызывается когда происходит Нажатие и Движение мыши в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.MouseMove">
+            <summary>
+            Вызывается когда происходит Движение мыши в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.ScrollDelta">
+            <summary>
+            Вызывается когда покрутили Колесико на мышке в пределах Формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.KeyDown">
+            <summary>
+            Вызывается когда происходит Нажатие на кнопку в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.KeyUp">
+            <summary>
+            Вызывается когда происходит Отпускание кнопки в пределах формы
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.Paint">
+            <summary>
+            Метод Рисования, Draw
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.Invalidate">
+            <summary>
+            Метод Обновление Кадра, Update
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Component.Form.Form.LoadResourses">
+            <summary>
+            Метод Загрузки Ресурсов, LoadContent
+            </summary>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.IGameState">
+            <summary>
+            Представляет игровое состояние
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.IGameState.Name">
+            <summary>
+            Имя состояния
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.IGameState.Show">
+            <summary>
+            Показать
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.IGameState.Hide">
+            <summary>
+            Скрыть
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.IGameState.Change(System.String)">
+            <summary>
+            Изменить на другое состояние
+            </summary>
+            <param name="gameStateName">Имя нового состояния</param>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.GameState">
+            <summary>
+            Игровое Состояние
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameState.#ctor(FormControl.Base.Component.Form.Form)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="form"></param>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameState.Show">
+            <summary>
+            Показать
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameState.Hide">
+            <summary>
+            Скрыть
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameState.Change(System.String)">
+            <summary>
+            Изменить состояние на другое состояние.
+            </summary>
+            <param name="gameStateName">Имя Нового Состояния</param>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.ThreadEventHandler">
+            <summary>
+            Делегат Событий потока
+            </summary>
+            <param name="thisTread"></param>
+            <returns></returns>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.ThreadEventHandlerVoid">
+            <summary>
+            Делегат событий потока
+            </summary>
+            <param name="thisTread"></param>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.GameThread">
+            <summary>
+            Игровой Поток для Обработки Данных или для загрузки неких Компонентов...
+            </summary>
+        </member>
+        <member name="E:FormControl.Base.Mehanic.GameThread.ThreadEnd">
+            <summary>
+            Вызывается когда поток закончил свою Работу
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.GameThread.IsEnd">
+            <summary>
+            Закончился ли поток
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.GameThread.Name">
+            <summary>
+            Имя потока
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.GameThread.Priority">
+            <summary>
+            Приоритет
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameThread.#ctor(FormControl.Base.Mehanic.ThreadEventHandler)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameThread.Start">
+            <summary>
+            Запустить поток
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameThread.Stop">
+            <summary>
+            Остановить поток
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameThread.Dispose">
+            <summary>
+            Освободить рессурсы
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.GameThread.Dispose(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="has"></param>
+        </member>
+        <member name="T:FormControl.Base.Mehanic.LoadingScreen">
+            <summary>
+            Состояние загрузки
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.LoadingScreen.BackGroundThread">
+            <summary>
+            Поток выполнение операции
+            </summary>
+        </member>
+        <member name="P:FormControl.Base.Mehanic.LoadingScreen.NextState">
+            <summary>
+            Следующее состояние, которое запустится после выполнения потока
+            </summary>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.LoadingScreen.#ctor(FormControl.Base.Component.Form.Form,Microsoft.Xna.Framework.Graphics.SpriteFont)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="form"></param>
+            <param name="font"></param>
+        </member>
+        <member name="M:FormControl.Base.Mehanic.LoadingScreen.Show">
+            <summary>
+            Показать
+            </summary>
+        </member>
+        <member name="T:FormControl.Singelton`1">
+            <summary>
+            Базовый обстрактный класс Одиночки
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:FormControl.Singelton`1.GetInstance">
+            <summary>
+            Получить Объект
+            </summary>
+        </member>
+        <member name="T:FormControl.BasicGraphics">
+            <summary>
+            Базовый Класс Отрисовки.
+            </summary>
+        </member>
+        <member name="P:FormControl.BasicGraphics.PixelTexture">
+            <summary>
+            Пиксель
+            </summary>
+        </member>
+        <member name="M:FormControl.BasicGraphics.#ctor(Microsoft.Xna.Framework.Graphics.GraphicsDevice)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="graphicsDevice"></param>
+        </member>
+        <member name="M:FormControl.BasicGraphics.DrawRectangle(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,System.Int32,System.Single)">
+            <summary>
+            Draw a rectangle.
+            </summary>
+            <param name="rectangle">The rectangle to draw.</param>
+            <param name="color">The draw color.</param>
+            <param name="border">Size Border</param>
+            <param name="layerDetpch">The Layer Deptch.</param>
+        </member>
+        <member name="T:FormControl.Graphics">
+            <summary>
+            Класс Для работы с XNA 2D Отрисовкой.
+            </summary>
+        </member>
+        <member name="M:FormControl.Graphics.#ctor(Microsoft.Xna.Framework.Graphics.GraphicsDevice)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="graphicsDevice"></param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="rect">The rectangle to draw</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="rect">The rectangle to draw</param>
+            <param name="color">The color to draw the rectangle in</param>
+            <param name="angle">The angle in radians to draw the rectangle at</param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="location">Where to draw</param>
+            <param name="size">The size of the rectangle</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="location">Where to draw</param>
+            <param name="size">The size of the rectangle</param>
+            <param name="angle">The angle in radians to draw the rectangle at</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(System.Single,System.Single,System.Single,System.Single,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="x">The X coord of the left side</param>
+            <param name="y">The Y coord of the upper side</param>
+            <param name="w">Width</param>
+            <param name="h">Height</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.FillRectangle(System.Single,System.Single,System.Single,System.Single,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a filled rectangle
+            </summary>
+            <param name="x">The X coord of the left side</param>
+            <param name="y">The Y coord of the upper side</param>
+            <param name="w">Width</param>
+            <param name="h">Height</param>
+            <param name="color">The color to draw the rectangle in</param>
+            <param name="angle">The angle of the rectangle in radians</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawPath(Microsoft.Xna.Framework.Vector2,System.Collections.Generic.List{Microsoft.Xna.Framework.Vector2},Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a list of connecting points
+            </summary>
+            /// <param name="position">Where to position the points</param>
+            <param name="points">The points to connect with lines</param>
+            <param name="color">The color to use</param>
+            <param name="border">The border of the lines</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawRectangle(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a rectangle with the border provided
+            </summary>
+            <param name="rect">The rectangle to draw</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawRectangle(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a rectangle with the border provided
+            </summary>
+            <param name="rect">The rectangle to draw</param>
+            <param name="color">The color to draw the rectangle in</param>
+            <param name="border">The border of the lines</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawRectangle(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a rectangle with the border provided
+            </summary>
+            <param name="location">Where to draw</param>
+            <param name="size">The size of the rectangle</param>
+            <param name="color">The color to draw the rectangle in</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawRectangle(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a rectangle with the border provided
+            </summary>
+            <param name="location">Where to draw</param>
+            <param name="size">The size of the rectangle</param>
+            <param name="color">The color to draw the rectangle in</param>
+            <param name="border">The border of the line</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(System.Single,System.Single,System.Single,System.Single,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Отрисовать Линию
+            </summary>
+            <param name="x1"></param>
+            <param name="y1"></param>
+            <param name="x2"></param>
+            <param name="y2"></param>
+            <param name="color"></param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(System.Single,System.Single,System.Single,System.Single,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Отрисовать Линию
+            </summary>
+            <param name="x1"></param>
+            <param name="y1"></param>
+            <param name="x2"></param>
+            <param name="y2"></param>
+            <param name="color"></param>
+            <param name="border"></param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a line from point1 to point2 with an offset
+            </summary>
+            <param name="point1">The first point</param>
+            <param name="point2">The second point</param>
+            <param name="color">The color to use</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a line from point1 to point2 with an offset
+            </summary>
+            <param name="point1">The first point</param>
+            <param name="point2">The second point</param>
+            <param name="color">The color to use</param>
+            <param name="border">The border of the line</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(Microsoft.Xna.Framework.Vector2,System.Single,System.Single,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draws a line from point1 to point2 with an offset
+            </summary>
+            <param name="point">The starting point</param>
+            <param name="length">The length of the line</param>
+            <param name="angle">The angle of this line from the starting point in radians</param>
+            <param name="color">The color to use</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawLine(Microsoft.Xna.Framework.Vector2,System.Single,System.Single,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a line from point1 to point2 with an offset
+            </summary>
+            <param name="point">The starting point</param>
+            <param name="length">The length of the line</param>
+            <param name="angle">The angle of this line from the starting point</param>
+            <param name="color">The color to use</param>
+            <param name="border">The border of the line</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawPixel(System.Single,System.Single,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Отрисовать Пиксель
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="color"></param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawPixel(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Отрисовать Пиксель
+            </summary>
+            <param name="position"></param>
+            <param name="color"></param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawCircle(Microsoft.Xna.Framework.Vector2,System.Single,System.Int32,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draw a circle
+            </summary>
+            <param name="center">The center of the circle</param>
+            <param name="radius">The radius of the circle</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="color">The color of the circle</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawElipse(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draw a Elipse
+            </summary>
+            <param name="rect"></param>
+            <param name="color"></param>
+            <param name="border"></param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawCircle(Microsoft.Xna.Framework.Vector2,System.Single,System.Int32,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draw a circle
+            </summary>
+            <param name="center">The center of the circle</param>
+            <param name="radius">The radius of the circle</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="color">The color of the circle</param>
+            <param name="border">The border of the lines used</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawCircle(System.Single,System.Single,System.Single,System.Int32,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draw a circle
+            </summary>
+            <param name="x">The center X of the circle</param>
+            <param name="y">The center Y of the circle</param>
+            <param name="radius">The radius of the circle</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="color">The color of the circle</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawCircle(System.Single,System.Single,System.Single,System.Int32,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draw a circle
+            </summary>
+            <param name="x">The center X of the circle</param>
+            <param name="y">The center Y of the circle</param>
+            <param name="radius">The radius of the circle</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="color">The color of the circle</param>
+            <param name="border">The border of the lines used</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawArc(Microsoft.Xna.Framework.Vector2,System.Single,System.Int32,System.Single,System.Single,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Draw a arc
+            </summary>
+            <param name="center">The center of the arc</param>
+            <param name="radius">The radius of the arc</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="startingAngle">The starting angle of arc, 0 being to the east, increasing as you go clockwise</param>
+            <param name="radians">The number of radians to draw, clockwise from the starting angle</param>
+            <param name="color">The color of the arc</param>
+        </member>
+        <member name="M:FormControl.Graphics.DrawArc(Microsoft.Xna.Framework.Vector2,System.Single,System.Int32,System.Single,System.Single,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draw a arc
+            </summary>
+            <param name="center">The center of the arc</param>
+            <param name="radius">The radius of the arc</param>
+            <param name="sides">The number of sides to generate</param>
+            <param name="startingAngle">The starting angle of arc, 0 being to the east, increasing as you go clockwise</param>
+            <param name="radians">The number of radians to draw, clockwise from the starting angle</param>
+            <param name="color">The color of the arc</param>
+            <param name="border">The border of the arc</param>
+        </member>
+        <member name="T:FormControl.Input.PkInputManager">
+            <summary>
+            Менеджер Входных устройств для ПК
+            </summary>
+        </member>
+        <member name="P:FormControl.Input.PkInputManager.KeyboardState">
+            <summary>
+            Текущее Клавиатурное состояние
+            </summary>
+        </member>
+        <member name="P:FormControl.Input.PkInputManager.LastKeyboardState">
+            <summary>
+            Предыдущее Клавиатурное состояние
+            </summary>
+        </member>
+        <member name="P:FormControl.Input.PkInputManager.MouseState">
+            <summary>
+            Текущее состояние мыши
+            </summary>
+        </member>
+        <member name="P:FormControl.Input.PkInputManager.LastMouseState">
+            <summary>
+            Предыдущее состояние мыши
+            </summary>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.#ctor">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.Flush">
+            <summary>
+            Обновить клавиатурное состояние
+            </summary>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.MouseFlush">
+            <summary>
+            Обновить состояние мыши
+            </summary>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.KeyReleased(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            возращяет ли была отпущена кнопка
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.KeyPressed(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            возращяет ли была нажата и отпущена кнопка
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.KeyDown(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            возращяет ли зажата кнопка
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.MouseClick(FormControl.Base.Component.MouseButton)">
+            <summary>
+            Ли был Клик
+            </summary>
+            <param name="type">расматриваемая кнопка мышьи</param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.MouseDown(FormControl.Base.Component.MouseButton)">
+            <summary>
+            Ли кнопка зажата
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.MouseUp(FormControl.Base.Component.MouseButton)">
+            <summary>
+            Ли кнопка отпущена
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            нажата ли кнопка
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.IsKeyUp(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            Отпущена ли кнопка
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Input.PkInputManager.GetPresedKeys">
+            <summary>
+            Получить список нажатых кнопок
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FormControl.IInicializator">
+            <summary>
+            Объект который умеет инициализироваться
+            </summary>
+        </member>
+        <member name="M:FormControl.IInicializator.Inicialize">
+            <summary>
+            Инициализировать
+            </summary>
+        </member>
+        <member name="T:FormControl.IContent">
+            <summary>
+            Объект который имеет контент
+            </summary>
+        </member>
+        <member name="M:FormControl.IContent.LoadContent(Microsoft.Xna.Framework.Content.ContentManager)">
+            <summary>
+            Загрузить контент
+            </summary>
+            <param name="content"></param>
+        </member>
+        <member name="M:FormControl.IContent.UnloadContent">
+            <summary>
+            Выгрузить контент
+            </summary>
+        </member>
+        <member name="T:FormControl.IWindow">
+            <summary>
+            Представляет Объект Окно
+            </summary>
+        </member>
+        <member name="P:FormControl.IWindow.Graphics2D">
+            <summary>
+            Объект графики
+            </summary>
+        </member>
+        <member name="P:FormControl.IWindow.Screen">
+            <summary>
+            Размеры окна
+            </summary>
+        </member>
+        <member name="P:FormControl.IWindow.GraphicsDevice">
+            <summary>
+            Девайс отрисовки
+            </summary>
+        </member>
+        <member name="P:FormControl.IWindow.Content">
+            <summary>
+            Контент Менеджер для загрузки контента
+            </summary>
+        </member>
+        <member name="T:FormControl.Visitor">
+            <summary></summary>
+        </member>
+        <member name="M:FormControl.Visitor.ConvertSingle(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Преобразовать в Float Сущность
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Visitor.ConvertToVector(Microsoft.Xna.Framework.Point)">
+            <summary>
+            Преобразовать в Float Сущность
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Visitor.Center(Microsoft.Xna.Framework.Point)">
+            <summary>
+            Центр
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Visitor.Center(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Центр
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Visitor.ConvertToPoint(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Преобразовать в Int Сущность
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="F:FormControl.Visitor.SingleTolerance">
+            <summary>
+            Максимальная отклонение, Float которое считается как 0.
+            </summary>
+        </member>
+        <member name="M:FormControl.Visitor.CorrectEquals(System.Single,System.Single)">
+            <summary>
+            Коректная проверка float
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.Visitor.CorrectEquals(System.Double,System.Double)">
+            <summary>
+            Коректная проверка double типа
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="T:FormControl.RectangleF">
+            <summary>
+            Прямоугольник
+            </summary>
+        </member>
+        <member name="M:FormControl.RectangleF.ToRectangle">
+            <summary>
+            Преобразовать в интовую сущность
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Конструктор по умолчанию
+            </summary>
+            <param name="pX"></param>
+            <param name="pY"></param>
+            <param name="pWidth"></param>
+            <param name="pHeight"></param>
+        </member>
+        <member name="M:FormControl.RectangleF.Contains(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Содержит ли данная точка в этом прямоугольнике
+            </summary>
+            <param name="pPoint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.Union(FormControl.RectangleF,FormControl.RectangleF)">
+            <summary>
+            Соединить оба прямоугольника
+            </summary>
+            <param name="rect1"></param>
+            <param name="rect2"></param>
+            <returns></returns>
+        </member>
+        <member name="P:FormControl.RectangleF.X">
+            <summary>
+            X Координата
+            </summary>
+        </member>
+        <member name="P:FormControl.RectangleF.Y">
+            <summary>
+            Y Координата
+            </summary>
+        </member>
+        <member name="P:FormControl.RectangleF.Width">
+            <summary>
+            Ширина
+            </summary>
+        </member>
+        <member name="P:FormControl.RectangleF.Height">
+            <summary>
+            Высота
+            </summary>
+        </member>
+        <member name="P:FormControl.RectangleF.Right">
+            <summary>
+            Правый угол
+            </summary>
+        </member>
+        <member name="P:FormControl.RectangleF.Bottom">
+            <summary>
+            Нижний угол
+            </summary>
+        </member>
+        <member name="M:FormControl.RectangleF.Clone">
+            <summary>
+            Клонировать объект
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.Intersets(FormControl.RectangleF)">
+            <summary>
+            Ли входит данный объект в другой
+            </summary>
+            <param name="r"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.Intersets(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Ли входит данный объект в другой
+            </summary>
+            <param name="r"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.Equals(FormControl.RectangleF)">
+            <summary>
+            
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FormControl.RectangleF.Equals(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="P:FormControl.RectangleF.Empty">
+            <summary>
+            Пустой прямоугольник
+            </summary>
+        </member>
+    </members>
+</doc>
