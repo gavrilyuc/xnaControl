@@ -52,5 +52,9 @@ namespace FormControl.Component.Layout
         /// <param name="name"></param>
         /// <returns></returns>
         Control this[string name] { get; set; }
+        /// <summary>
+        /// Отсортировать Контролы в контейнере по правилам контейнера.
+        /// </summary>
+        void Sort();
     }
 }

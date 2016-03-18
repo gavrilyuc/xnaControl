@@ -1,8 +1,7 @@
 ﻿using System;
-using FormControl.Component.Controls.Base;
+using System.ComponentModel;
 using FormControl.Component.Layout;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace FormControl.Component.Controls
 {
@@ -18,7 +17,8 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Выделеный Объект
         /// </summary>
-        /// 
+        ///
+        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public int SelectedIndex
         {
             get { return _sel; }
@@ -32,6 +32,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Выделеный Контрол
         /// </summary>
+        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public Control SelectedControl
         {
             get
@@ -43,46 +44,61 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Автоматически подстраивать размер контрола
         /// </summary>
+        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public bool AutoSize { get; set; } = true;
         /// <summary>
         /// Размер для каждего Объекта внутри списка
         /// </summary>
+        [Category(PropertyGridCategoriesText.BasicCategory)]
         public Vector2 ItemSize
         {
             get { return _itemSize; }
             set
             {
+                if (_itemSize == value) return;
+                for (int i = 0; i < Controls.Count; i++) Controls[i].Size = value;
                 _itemSize = value;
                 _itemSize.X = Size.X;
-                if (Controls.Count > 0 && AutoSize)
-                    Size = new Vector2(Size.X, _itemSize.Y * Controls.Count);
+                if (Controls.Count > 0 && AutoSize) Size = new Vector2(Size.X, _itemSize.Y * Controls.Count);
             }
         }
 
         /// <summary>
         /// Вызывается когда происходит изменение индекса выделеного Объекта
         /// </summary>
-        public event EventHandler SelectedIndexChanged = delegate { }; 
+        public event EventHandler SelectedIndexChanged = delegate { };
 
         /// <summary>
-        /// ctor
+        /// Конструктор по умолчанию
         /// </summary>
-        public ListBox()
+        public ListBox() : this(new DefaultLayuout()) { }
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
+        public ListBox(IControlLayout layout) : base(layout)
         {
             MouseDown += ListBox_MouseDown;
             MouseUp += ListBox_MouseUp;
+
             Controls.ControlsAdded += FixableItemSize;
             Controls.ControlsRemoved += UnFixableItemSize;
+
+            ResizeControl += ListBox_ResizeControl;
         }
 
         #region Events
-        private static void UnFixableItemSize(DefaultLayuout sender, Control utilizingControl)
+        private void UnFixableItemSize(DefaultLayuout sender, Control utilizingControl)
         {
             utilizingControl.LockedTransformation = false; // UnSet locking Transformations...
+            InvalidateSize();
         }
-        private static void FixableItemSize(DefaultLayuout sender, Control utilizingControl)
+        private void FixableItemSize(DefaultLayuout sender, Control utilizingControl)
         {
+            utilizingControl.Size = ItemSize;
             utilizingControl.LockedTransformation = true; // set locking Transformations...
+            utilizingControl.MouseDown += ListBox_MouseDown;
+            utilizingControl.MouseUp += ListBox_MouseUp;
+            InvalidateSize();
         }
         private void ListBox_MouseUp(Control sender, MouseEventArgs e)
         {
@@ -100,6 +116,50 @@ namespace FormControl.Component.Controls
                 (int)Math.Ceiling((e.Coord - DrawabledLocation).Y
                                   / ItemSize.Y) - 1; // -1 Array index is begining 0.
         }
+        private void ListBox_ResizeControl(Control sender)
+        {
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                Controls[i].LockedTransformation = false;
+                Controls[i].Location = new Vector2(0, i * ItemSize.Y);
+                Controls[i].LockedTransformation = true;
+            }
+            InvalidateSize();
+        }
+        private void InvalidateSize()
+        {
+            if (!AutoSize) return;
+            Vector2 tmp = new Vector2(Size.X, ItemSize.Y * (Controls.Count == 0 ? 1 : Controls.Count));
+            if (Size.Y >= tmp.Y) return;
+            LockedTransformation = false;
+            Size = tmp;
+            LockedTransformation = true;
+        }
         #endregion
+
+        /// <summary></summary>
+        protected override void OnVisibleControlsSetter(bool value)
+        {
+            base.OnVisibleControlsSetter(value);
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                Controls[i].LockedTransformation = false;
+                Controls[i].Location = new Vector2(0, i * ItemSize.Y);
+                Controls[i].Size = new Vector2(Size.X, ItemSize.Y);
+                Controls[i].LockedTransformation = true;
+            }
+            InvalidateSize();
+        }
+        /// <summary></summary>
+        public override void Inicialize()
+        {
+            base.Inicialize();
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                Controls[i].LockedTransformation = false;
+                Controls[i].Location = new Vector2(0, i * ItemSize.Y);
+                Controls[i].LockedTransformation = true;
+            }
+        }
     }
 }

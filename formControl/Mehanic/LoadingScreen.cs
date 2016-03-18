@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Globalization;
 using FormControl.Component.Controls;
-using FormControl.Component.Form;
+using FormControl.Component.Forms;
 using FormControl.Input;
 namespace FormControl.Mehanic
 {
@@ -70,7 +71,7 @@ namespace FormControl.Mehanic
         /// </summary>
         public void Start()
         {
-            _th.Name = $"{GameTag} {this.Name}";
+            _th.Name = "{0} {1}".DefaultFormat(GameTag, Name);
             _th.Priority = Priority;
             _th.Start();
         }
@@ -87,6 +88,7 @@ namespace FormControl.Mehanic
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
         /// <summary>
         /// 
@@ -96,7 +98,6 @@ namespace FormControl.Mehanic
         {
             _th = null;
             ThreadEnd = null;
-            if (has) GC.SuppressFinalize(this);
         }
     }
 
@@ -116,7 +117,8 @@ namespace FormControl.Mehanic
             {
                 if (_thread == value) return;
                 _thread = value;
-                _thread.ThreadEnd += BackGroundThread_ThreadEnd;
+                if (value != null)
+                    _thread.ThreadEnd += BackGroundThread_ThreadEnd;
             }
         }
         /// <summary>
@@ -129,9 +131,9 @@ namespace FormControl.Mehanic
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="userForm"></param>
         /// <param name="font"></param>
-        public LoadingScreen(Form form, SpriteFont font) : base(form)
+        public LoadingScreen(Form userForm, SpriteFont font) : base(userForm)
         {
             _baseFont = font;
             Paint += LoadingScreen_Paint;
@@ -174,7 +176,7 @@ namespace FormControl.Mehanic
             e.Graphics.DrawString(_baseFont,
                 BaseString + (_thisType == 1 ? "." : _thisType == 2 ? ".." : _thisType == 3 ? "..." : ""),
                 _center, Color.Lime, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0.09f);
-            e.Graphics.FillRectangle(new Rectangle(0, 0, this.Window.Screen.X, this.Window.Screen.Y), new Color(64, 64, 64, 64));
+            e.Graphics.FillRectangle(new Rectangle(0, 0, Window.Screen.X, Window.Screen.Y), new Color(64, 64, 64, 64));
         }
 
         /// <summary>

@@ -13,7 +13,11 @@ namespace FormControl.Drawing
         /// Шрифт
         /// </summary>
         public SpriteFont Font { get; }
-        internal string Text { get; set; }
+        /// <summary>
+        /// Рисуемый текст
+        /// </summary>
+        public string Text { get; set; }
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -28,7 +32,29 @@ namespace FormControl.Drawing
         /// <param name="region"></param>
         public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, IDrawablingTransformation region)
         {
-            graphics.DrawString(Font, Text, region.DrawabledLocation, Color);
+            AlgorithmDrawable(graphics, gameTime, region.DrawabledLocation);
+        }
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="position"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Vector2 position)
+        {
+            if (Font != null && Text != null)
+                graphics.DrawString(Font, Text, position, Color);
+
+        }
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="rectangle"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Rectangle rectangle)
+        {
+            AlgorithmDrawable(graphics, gameTime, rectangle.Location.ConvertToVector());
         }
     }
 

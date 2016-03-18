@@ -1,4 +1,6 @@
-﻿using FormControl.Input;
+﻿using System;
+using System.ComponentModel;
+using FormControl.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using FormControl.Component.Layout;
@@ -8,24 +10,22 @@ namespace FormControl.Component.Controls
     /// <summary>
     /// Базовый Объект Контрола
     /// </summary>
-    public class Control : IControl
+    public class Control : IControl, IInicializator
     {
         #region Variables
+        private Vector2 _parrentLocation;
         private bool _isDraged;
         private Vector2 _l, _s;
         private bool _isInputMouse;
         private bool _isEnabled;
         private bool _isDrawabled;
         private Control _parentControl;
-
-        private static Graphics _graphics;
-        private static IWindow _window;
         private static bool _isBlockedMouse;
         private static bool _isBlockedKeyBoard;
         private static bool _isClick;
         private static Control _focus;
         private static bool _isMouseDown;
-        private static readonly PkInputManager Input = PkInputManager.GetInstance;// Input (Mouse & KeyBoard) Manager.
+        private static readonly PKInputManager Input = PKInputManager.GetInstance; // Input (Mouse & KeyBoard) Manager.
         #endregion
 
         #region Constructor
@@ -62,8 +62,14 @@ namespace FormControl.Component.Controls
             Location = Vector2.Zero;
             Size = Vector2.Zero;
             Controls.ControlsAdded += Controls_ControlsAdded;
-
             Name = GetType().FullName;
+            LocationChangeControl += Control_LocationChangeControl;
+        }
+
+        private void Control_LocationChangeControl(Control sender)
+        {
+            for (int i = 0; i < Controls.Count; i++)
+                Controls[i].DrawabledLocation = DrawabledLocation;
         }
         #endregion
 
@@ -71,71 +77,71 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Задатие мыши на объекту
         /// </summary>
-        public event MouseEventHandler MouseDown = delegate { };
+        public event MouseEventHandler MouseDown;
         /// <summary>
         /// Отпускание мыши на объекту
         /// </summary>
-        public event MouseEventHandler MouseUp = delegate { };
+        public event MouseEventHandler MouseUp;
         /// <summary>
         /// Нажатие мыши на объекту
         /// </summary>
-        public event MouseEventHandler Click = delegate { };
+        public event MouseEventHandler Click;
         /// <summary>
         /// Вызывается когда происходит зажатое движение мыши
         /// </summary>
-        public event MouseEventHandler MouseDrag = delegate { };
+        public event MouseEventHandler MouseDrag;
         /// <summary>
         /// Движение мыши на объекту
         /// </summary>
-        public event MouseEventHandler MouseMove = delegate { };
+        public event MouseEventHandler MouseMove;
         /// <summary>
         /// Вхождение мыши в Объект
         /// </summary>
-        public event MouseEventHandler MouseInput = delegate { };
+        public event MouseEventHandler MouseInput;
         /// <summary>
         /// Выход мыши из Объекта
         /// </summary>
-        public event MouseEventHandler MouseLeave = delegate { };
+        public event MouseEventHandler MouseLeave;
         /// <summary>
         /// Скроллинг мыши (Колесико)
         /// </summary>
-        public event MouseEventHandler ScrollDelta = delegate { };
+        public event MouseEventHandler ScrollDelta;
         /// <summary>
         /// Нажатие Кнопки
         /// </summary>
-        public event KeyEventHandler KeyDown = delegate { };
+        public event KeyEventHandler KeyDown;
         /// <summary>
         /// Отпускание Кнопки
         /// </summary>
-        public event KeyEventHandler KeyUp = delegate { };
+        public event KeyEventHandler KeyUp;
         /// <summary>
         /// Вызывается когда Кнопка зажата
         /// </summary>
-        public event KeyEventHandler KeyPresed = delegate { };
+        public event KeyEventHandler KeyPresed;
         /// <summary>
         /// Вызывается вместе с методом Draw
         /// </summary>
-        public event TickEventHandler Paint = delegate { };
+        public event TickEventHandler Paint;
         /// <summary>
         /// Вызывается вместе с Методом Update
         /// </summary>
-        public event TickEventHandler Invalidate = delegate { };
+        public event TickEventHandler Invalidate;
         /// <summary>
         /// Вызывается когда изменяется размеры контрола
         /// </summary>
-        public event EventHandler ResizeControl = delegate { };
+        public event EventHandler ResizeControl;
         /// <summary>
         /// Вызывается когда изменяется позиция контрола
         /// </summary>
-        public event EventHandler LocationChangeControl = delegate { };
+        public event EventHandler LocationChangeControl;
         /// <summary>
         /// Вызывается когда изменяется контейнер у контрола
         /// </summary>
-        public event EventHandler ParentChanged = delegate { };
+        public event EventHandler ParentChanged;
         /// <summary>
         /// Вызывается тогда, когда у контрола изменяется Фокус.
         /// </summary>
-        public event EventHandler FocusableChanged = delegate { };
+        public event EventHandler FocusableChanged;
         #endregion
 
         #region Realise Event's & XNA Methods
@@ -154,19 +160,16 @@ namespace FormControl.Component.Controls
         internal virtual void Update(GameTime gameTime)
         {
             if (Enabled == false) return;
-            Control item;
-            for (int i = Controls.Count - 1; i >= 0; i--)
+            for (int i = Controls.Count - 1; i > -1; i--)
             {
-                item = Controls[i];
-                if (item.ParrentLocation != ParrentLocation) item.ParrentLocation = DrawabledLocation;
-                item.Update(gameTime);
+                //Controls[i].DrawabledLocation = DrawabledLocation;
+                Controls[i].Update(gameTime);
             }
 
             if (!_isBlockedMouse) MouseUpdate(gameTime);
             if (!_isBlockedKeyBoard) KeyboardUpdate(gameTime);
 
             _ticks.GameTime = gameTime;
-
             OnInvalidate(_ticks);
         }
         private void MouseUpdate(GameTime gameTime)
@@ -174,7 +177,9 @@ namespace FormControl.Component.Controls
             if (_isBlockedMouse) return;
             Vector2 mouse = new Vector2(Input.MouseState.X, Input.MouseState.Y);
             Vector2 prevMouse = new Vector2(Input.LastMouseState.X, Input.LastMouseState.Y);
-            bool isInputPos = new RectangleF(DrawabledLocation.X, DrawabledLocation.Y, Size.X, Size.Y).Contains(new Vector2(Input.MouseState.X, Input.MouseState.Y));
+            bool isInputPos =
+                new RectangleF(DrawabledLocation.X, DrawabledLocation.Y, Size.X, Size.Y).Contains(
+                    new Vector2(Input.MouseState.X, Input.MouseState.Y));
 
             _mouseEventArgs.GameTime = gameTime;
             _mouseEventArgs.Button = MouseButton.Left;
@@ -221,7 +226,7 @@ namespace FormControl.Component.Controls
             Keys[] lastStateKeys = Input.LastKeyboardState.GetPressedKeys();
             Keys[] currentStateKeys = Input.KeyboardState.GetPressedKeys();
 
-            bool isShift = Input.KeyDown(Keys.LeftShift) || Input.KeyDown(Keys.RightShift);
+            _keyEventArgs.IsShift = Input.KeyDown(Keys.LeftShift) || Input.KeyDown(Keys.RightShift);
             _keyEventArgs.GameTime = gameTime;
             _keyEventArgs.KeyState = KeyState.KeyDown;
             for (int i = 0; i < currentStateKeys.Length; i++)
@@ -229,37 +234,34 @@ namespace FormControl.Component.Controls
                 if (lastStateKeys.IndexOfOnArray(currentStateKeys[i]) == -1)
                 {
                     _keyEventArgs.KeyCode = currentStateKeys[i];
-                    _keyEventArgs.SetKeyShiftingChar(isShift);
                     OnKeyDown(_keyEventArgs);
                 }
                 else
                 {
                     _keyEventArgs.KeyCode = currentStateKeys[i];
-                    _keyEventArgs.SetKeyShiftingChar(isShift);
                     OnKeyPresed(_keyEventArgs);
                 }
             }
-            
+
             _keyEventArgs.KeyState = KeyState.KeyUp;
             for (int i = 0; i < lastStateKeys.Length; i++)
             {
                 if (currentStateKeys.IndexOfOnArray(lastStateKeys[i]) != -1) continue;
                 _keyEventArgs.KeyCode = lastStateKeys[i];
-                _keyEventArgs.SetKeyShiftingChar(isShift);
                 OnKeyUp(_keyEventArgs);
             }
         }
-
         private void Controls_ControlsAdded(DefaultLayuout sender, Control utilizingControl)
         {
             utilizingControl.ParentControl = this;
-            utilizingControl.ParrentLocation = Location;
+            utilizingControl.DrawabledLocation = DrawabledLocation;
             utilizingControl.Enabled = Enabled;
             utilizingControl.Visibled = Visibled;
         }
         private void Control_MouseMove(Control sender, MouseEventArgs e)
         {
-            if (_isDraged && Input.MouseState.X != Input.LastMouseState.X || Input.LastMouseState.Y != Input.MouseState.Y)
+            if (_isDraged && Input.MouseState.X != Input.LastMouseState.X
+                || Input.LastMouseState.Y != Input.MouseState.Y)
                 OnMouseDrag(e);
         }
         private void Control_MouseUp(Control sender, MouseEventArgs e)
@@ -268,7 +270,7 @@ namespace FormControl.Component.Controls
             if (_isClick && _focus == this)
             {
                 _isClick = false;
-                Click(this, e);
+                Click?.Invoke(this, e);
             }
             else _isClick = false;
         }
@@ -288,7 +290,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Имя Контрола, Используется для распознавания Уникальных Контролов
         /// </summary>
-        public string Name { get; set; }
+        [Category(PropertyGridCategoriesText.BasicCategory)] public string Name { get; set; }
         /// <summary>
         /// Контейнер для Контролов
         /// </summary>
@@ -297,101 +299,100 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Позиция контрола
         /// </summary>
-        public Vector2 Location
+        [Category(PropertyGridCategoriesText.BasicCategory)] public Vector2 Location
         {
             get { return _l; }
             set
             {
-                if(LockedTransformation) return;
+                if (LockedTransformation || _l == value) return;
                 _l = value;
-                LocationChangeControl(this);
+                LocationChangeControl?.Invoke(this);
             }
         }
         /// <summary>
         /// Размеры контрола
         /// </summary>
-        public Vector2 Size
+        [Category(PropertyGridCategoriesText.BasicCategory)] public Vector2 Size
         {
             get { return _s; }
             set
             {
-                if (LockedTransformation) return;
+                if (LockedTransformation || _s == value) return;
                 _s = value;
-                ResizeControl(this);
+                ResizeControl?.Invoke(this);
             }
         }
-        private Vector2 ParrentLocation { get; set; }
         /// <summary>
         /// Глобальные координаты контрола, относительно окна
         /// </summary>
-        public Vector2 DrawabledLocation => Location + ParrentLocation;
+        [DisplayName("Location Drawable"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
+        public Vector2 DrawabledLocation
+        {
+            get { return Location + _parrentLocation; }
+            protected internal set { _parrentLocation = value; }
+        }
         /// <summary>
         /// Глобальная Клиенская область контрола, относительно окна
         /// </summary>
+        [DisplayName("Client Rectangle"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
         public Rectangle ClientRectangle => new RectangleF(DrawabledLocation.X, DrawabledLocation.Y, Size.X, Size.Y).ToRectangle();
         /// <summary>
         /// Клиенская область контрола
         /// </summary>
+        [DisplayName("Client Size"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
         public RectangleF ClientSize => new RectangleF(0f, 0f, Size.X, Size.Y);
         /// <summary>
         /// Ли данный Контрол Содержит Фокус пользователя.
         /// </summary>
-        public bool Focused
+        [Category(PropertyGridCategoriesText.OtherCategory)] public bool Focused
         {
             get { return _focus == this; }
             set
             {
                 if (value) _focus = this;
                 else if (_focus == this) _focus = null;
-                FocusableChanged(this);
+                FocusableChanged?.Invoke(this);
             }
         }
 
         /// <summary>
         /// Ли должен рисоваться данный Объект
         /// </summary>
-        public bool Visibled
+        [Category(PropertyGridCategoriesText.BasicCategory)] public bool Visibled
         {
             get { return _isDrawabled; }
             set
             {
                 _isDrawabled = value;
-                for (int i = 0; i < Controls.Count; i++) Controls[i].Visibled = value;
+                OnVisibleControlsSetter(value);
             }
         }
         /// <summary>
         /// Должны Ли Обрабатываться События Контрола
         /// </summary>
-        public bool Enabled
+        [Category(PropertyGridCategoriesText.BasicCategory)] public bool Enabled
         {
             get { return _isEnabled; }
             set
             {
                 _isEnabled = value;
-                for (int i = 0; i < Controls.Count; i++) Controls[i].Enabled = value;
+                OnEnableControlsSetter(value);
             }
         }
 
         /// <summary>
         /// Пользовательское Свойство, для хранение пользовательских Данных
         /// </summary>
-        public object Tag { get; set; }
+        [Category(PropertyGridCategoriesText.BasicCategory)] public object Tag { get; set; }
+
         /// <summary>
         /// Объект Графики, для рисования
         /// </summary>
-        protected Graphics Graphics
-        {
-            get { return _graphics; }
-            private set { _graphics = value; }
-        }
+        protected static Graphics Graphics { get; private set; }
         /// <summary>
         /// Форма, в которой находится контрол
         /// </summary>
-        protected IWindow Window
-        {
-            get { return _window; }
-            private set { _window = value; }
-        }
+        protected static IWindow Window { get; private set; }
         #endregion
 
         #region Internal Properties
@@ -401,7 +402,7 @@ namespace FormControl.Component.Controls
             set
             {
                 _parentControl = value;
-                ParentChanged(this);
+                ParentChanged?.Invoke(this);
             }
         }
         internal bool LockedTransformation { get; set; } = false;
@@ -423,7 +424,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseDown(MouseEventArgs e)
         {
-            MouseDown(this, e);
+            MouseDown?.Invoke(this, e);
             _isBlockedMouse = true;
             _isMouseDown = true;
         }
@@ -433,7 +434,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseUp(MouseEventArgs e)
         {
-            MouseUp(this, e);
+            MouseUp?.Invoke(this, e);
             _isBlockedMouse = true;
             _isMouseDown = false;
         }
@@ -443,7 +444,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseMove(MouseEventArgs e)
         {
-            MouseMove(this, e);
+            MouseMove?.Invoke(this, e);
             _isBlockedMouse = true;
         }
         /// <summary>
@@ -452,7 +453,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseDrag(MouseEventArgs e)
         {
-            MouseDrag(this, e);
+            MouseDrag?.Invoke(this, e);
         }
         /// <summary>
         /// Вызывает делегат входа мыши в контрол
@@ -460,7 +461,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseInput(MouseEventArgs e)
         {
-            MouseInput(this, e);
+            MouseInput?.Invoke(this, e);
             _isInputMouse = true;
             _isBlockedMouse = true;
         }
@@ -470,7 +471,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnMouseLeave(MouseEventArgs e)
         {
-            MouseLeave(this, e);
+            MouseLeave?.Invoke(this, e);
             _isInputMouse = false;
         }
         /// <summary>
@@ -479,7 +480,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnScrollDelta(MouseEventArgs e)
         {
-            ScrollDelta(this, e);
+            ScrollDelta?.Invoke(this, e);
             _isBlockedMouse = true;
         }
         /// <summary>
@@ -488,7 +489,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnKeyDown(KeyEventArgs e)
         {
-            KeyDown(this, e);
+            KeyDown?.Invoke(this, e);
             _isBlockedKeyBoard = true;
         }
         /// <summary>
@@ -497,7 +498,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnKeyUp(KeyEventArgs e)
         {
-            KeyUp(this, e);
+            KeyUp?.Invoke(this, e);
             _isBlockedKeyBoard = true;
         }
         /// <summary>
@@ -506,7 +507,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnKeyPresed(KeyEventArgs e)
         {
-            KeyPresed(this, e);
+            KeyPresed?.Invoke(this, e);
             _isBlockedKeyBoard = true;
         }
         /// <summary>
@@ -515,7 +516,7 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnInvalidate(TickEventArgs e)
         {
-            Invalidate(this, e);
+            Invalidate?.Invoke(this, e);
         }
         /// <summary>
         /// Вызывает делегат Отрисовки кадра Контрола
@@ -525,12 +526,31 @@ namespace FormControl.Component.Controls
         /// <param name="e"></param>
         protected internal virtual void OnPaint(TickEventArgs e)
         {
-            Paint(this, e);
+            Paint?.Invoke(this, e);
             for (int i = 0; i < Controls.Count; i++) Controls[i].Draw(e.GameTime);
         }
 
         /// <summary>
-        /// Принудительно заставить контрола отриосваться.
+        /// Виртуальный метод для возможности переопределения своего алгоритма установки
+        /// Свойства: Enabled своим детишкам
+        /// </summary><param name="value"></param><returns></returns>
+        protected virtual void OnEnableControlsSetter(bool value)
+        {
+            for (int i = 0; i < Controls.Count; i++) Controls[i].Enabled = value;
+        }
+        /// <summary>
+        /// Виртуальный метод для возможности переопределения своего алгоритма установки
+        /// Свойства: Visibled своим детишкам
+        /// </summary><param name="value"></param><returns></returns>
+        protected virtual void OnVisibleControlsSetter(bool value)
+        {
+            for (int i = 0; i < Controls.Count; i++) Controls[i].Visibled = value;
+        }
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Принудительно Вызвать рисование у контрола
         /// Советуется этот метод использовать только тогда когда вы хотите переопределить отрисовку контрола и нужно заставить вызвать принудительно отрисовку
         /// Контрола
         /// </summary>
@@ -538,6 +558,25 @@ namespace FormControl.Component.Controls
         public void InvokePaint(GameTime gameTime)
         {
             Draw(gameTime);
+        }
+        /// <summary>
+        /// Принудительно вызвать Обновление контрола
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void InvokeInvalidate(GameTime gameTime)
+        {
+            Update(gameTime);
+        }
+        /// <summary>
+        /// Провести инициализацию контрола
+        /// Внимание, данный метод выполняется автоматически внутри формы в его контейнере
+        /// Если нужна повторная инициализация, потребуется повторный вызов.
+        /// </summary>
+        public virtual void Inicialize()
+        {
+            Controls.Sort();
+            Enabled = Enabled;
+            Visibled = Visibled;
         }
         #endregion
     }

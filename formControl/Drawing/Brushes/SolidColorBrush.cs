@@ -16,11 +16,31 @@ namespace FormControl.Drawing.Brushes
         /// <param name="region"></param>
         public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, IDrawablingTransformation region)
         {
-            graphics.FillRectangle(region.ClientRectangle, Color);
+            AlgorithmDrawable(graphics, gameTime, region.ClientRectangle);
         }
-
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="position"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Vector2 position)
+        {
+            Point p = position.ConvertToPoint();
+            AlgorithmDrawable(graphics, gameTime, new Rectangle(p.X, p.Y, 50, 50));
+        }
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="rectangle"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Rectangle rectangle)
+        {
+            graphics.FillRectangle(rectangle, Color);
+        }
         /// <summary></summary><returns></returns>
-        protected override Brush GetInctance() => Clone();
+        protected override Brush GetInctance => Clone();
 
         /// <summary>
         /// Клонировать Объект

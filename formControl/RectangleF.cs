@@ -50,7 +50,7 @@ namespace FormControl
         /// <param name="rect1"></param>
         /// <param name="rect2"></param>
         /// <returns></returns>
-        public RectangleF Union(RectangleF rect1, RectangleF rect2)
+        public static RectangleF Union(RectangleF rect1, RectangleF rect2)
         {
             RectangleF tempRect = new RectangleF
             {
@@ -87,6 +87,11 @@ namespace FormControl
                 Bottom = _y + _height;
             }
         }
+        /// <summary>
+        /// Позиция
+        /// </summary>
+        public Vector2 Location => new Vector2(X, Y);
+
         /// <summary>
         /// Ширина
         /// </summary>
@@ -137,7 +142,14 @@ namespace FormControl
         /// <returns></returns>
         public bool Intersets(Rectangle r) => IsCollision(this, r.ConvertSingle());
 
+        /// <summary>
+        /// Пустой прямоугольник
+        /// </summary>
+        public static RectangleF Empty => new RectangleF();
+
         private static bool IsCollision(RectangleF r2, RectangleF r1) => (r1.X + r1.Width >= r2.X && r1.Y + r1.Height >= r2.Y && r1.X <= r2.X + r2.Width && r1.Y <= r2.Y + r2.Height);
+        
+        #region Operands
         /// <summary>
         /// 
         /// </summary>
@@ -152,10 +164,24 @@ namespace FormControl
         /// <returns></returns>
         public bool Equals(Rectangle other) => X.CorrectEquals(other.X) && Y.CorrectEquals(other.Y) &&
                                                 Width.CorrectEquals(other.Width) && Height.CorrectEquals(other.Height);
-        /// <summary>
-        /// Пустой прямоугольник
-        /// </summary>
-        public static RectangleF Empty => new RectangleF();
+        /// <summary></summary><param name="obj"></param><returns></returns>
+        public override bool Equals(object obj) => obj is RectangleF ? Equals((RectangleF)obj)
+            : obj is Rectangle && Equals((Rectangle)obj);
+        /// <summary></summary><returns></returns>
+        public override int GetHashCode() { return base.GetHashCode(); }
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator ==(RectangleF a, RectangleF b) => a.Equals(b);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator !=(RectangleF a, RectangleF b) => !a.Equals(b);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator ==(RectangleF a, Rectangle b) => a.Equals(b);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator !=(RectangleF a, Rectangle b) => !a.Equals(b);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator ==(Rectangle a, RectangleF b) => b.Equals(a);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator !=(Rectangle a, RectangleF b) => !b.Equals(a);
+        #endregion
     }
 
 }

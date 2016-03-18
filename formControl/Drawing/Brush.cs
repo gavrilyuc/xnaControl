@@ -17,12 +17,27 @@ namespace FormControl.Drawing
         public abstract void AlgorithmDrawable(Graphics graphics, GameTime gameTime, IDrawablingTransformation region);
 
         /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="position"></param>
+        public abstract void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Vector2 position);
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="rectangle"></param>
+        public abstract void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Rectangle rectangle);
+
+        /// <summary>
         /// Клонировать Объект
         /// </summary>
         /// <returns></returns>
-        public Brush Clone() => GetInctance();
+        public Brush Clone() => GetInctance;
 
         /// <summary></summary><returns></returns>
-        protected abstract Brush GetInctance();
+        protected abstract Brush GetInctance { get; }
     }
 }

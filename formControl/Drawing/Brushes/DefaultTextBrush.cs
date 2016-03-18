@@ -21,7 +21,7 @@ namespace FormControl.Drawing.Brushes
         }
 
         /// <summary></summary><returns></returns>
-        protected override Brush GetInctance() => Clone();
+        protected override Brush GetInctance => Clone();
         /// <summary>
         /// Клонировать Объект
         /// </summary>

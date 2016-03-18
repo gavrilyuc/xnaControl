@@ -1,41 +1,55 @@
-﻿
-using System;
-using FormControl.Component.Controls;
+﻿using FormControl.Component.Controls;
 using Microsoft.Xna.Framework;
+
 namespace FormControl.Component.Layout
 {
     /// <summary>
-    /// Контейнер процентного Соотношения.
+    /// Контейнер процентного Соотношения, в соответсвии Размерам Вложеного Контейнера
     /// </summary>
     public sealed class ProcentLayout : DefaultLayuout
     {
-        private readonly Vector2 _procentContainer;
+        private Vector2 _procentContainer;
+
         private static readonly Vector2 FullProcent = new Vector2(100, 100);
+
         /// <summary>
-        /// 
+        /// Установить Трансформацию для данного контейнера.
         /// </summary>
-        /// <param name="container"></param>
-        public ProcentLayout(ITransformation container)
+        public void SetContainerTransformation(ITransformation value)
         {
             _procentContainer = new Vector2 {
-                X = container.ClientSize.Width / 100,
-                Y = container.ClientSize.Height / 100
+                X = value.ClientSize.Width / 100,
+                Y = value.ClientSize.Height / 100
             };
+            Control item;
+            for (int i = 0; i < Count; i++)
+            {
+                item = this[i];
+                item.LockedTransformation = false;
+                item.Location = Vector2.Min(Vector2.Max(Vector2.Zero, item.Location), FullProcent);
+                item.Location *= _procentContainer;
+
+                item.Size = Vector2.Min(Vector2.Max(Vector2.Zero, item.Size), FullProcent);
+                item.Size *= _procentContainer;
+                item.LockedTransformation = true;
+            }
         }
 
         /// <summary>
         /// Добавить контрол
         /// </summary>
-        /// <param name="control"></param>
-        public override void Add(Control control)
+        /// <param name="item"></param>
+        public override void Add(Control item)
         {
-            control.Location = Vector2.Min(control.Location, FullProcent);
-            control.Location *= _procentContainer;
+            item.LockedTransformation = false;
+            item.Location = Vector2.Min(Vector2.Max(Vector2.Zero, item.Location), FullProcent);
+            item.Location *= _procentContainer;
 
-            control.Size = Vector2.Min(control.Size, FullProcent);
-            control.Size *= _procentContainer;
+            item.Size = Vector2.Min(Vector2.Max(Vector2.Zero, item.Size), FullProcent);
+            item.Size *= _procentContainer;
+            item.LockedTransformation = true;
 
-            base.Add(control);
+            base.Add(item);
         }
     }
 }

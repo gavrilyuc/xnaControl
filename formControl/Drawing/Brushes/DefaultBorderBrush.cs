@@ -16,7 +16,7 @@ namespace FormControl.Drawing.Brushes
         public DefaultBorderBrush(int borderLength, Color color) : base(borderLength, color) {  }
 
         /// <summary></summary><returns></returns>
-        protected override Brush GetInctance() => Clone();
+        protected override Brush GetInctance => Clone();
         /// <summary>
         /// Клонировать Объект
         /// </summary>

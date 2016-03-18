@@ -1,13 +1,14 @@
 ﻿using FormControl.Component;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+// ReSharper disable once InconsistentNaming
 
 namespace FormControl.Input
 {
     /// <summary>
     /// Менеджер Входных устройств для ПК
     /// </summary>
-    public class PkInputManager : Singelton<PkInputManager>
+    public sealed class PKInputManager
     {
         private static MouseState _curMouse, _prevMouse;
         private static KeyboardState _keyboardState, _lastKeyboardState;
@@ -27,17 +28,17 @@ namespace FormControl.Input
         /// Предыдущее состояние мыши
         /// </summary>
         public MouseState LastMouseState => _prevMouse;
-
-        /// <summary>
-        /// Конструктор по умолчанию
-        /// </summary>
-        public PkInputManager()
+        private PKInputManager()
         {
             _keyboardState = Keyboard.GetState();
             _curMouse = Mouse.GetState();
         }
-
-        internal void Update(GameTime gameTime)
+        private static PKInputManager _instatce;
+        /// <summary>
+        /// Объект Менеджера клавиатуры и мыши
+        /// </summary>
+        public static PKInputManager GetInstance => _instatce ?? (_instatce = new PKInputManager());
+        internal void Update()
         {
             MouseFlush();
             Flush();

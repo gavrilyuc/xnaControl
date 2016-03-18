@@ -4,7 +4,7 @@ using FormControl.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FormControl.Component.Form
+namespace FormControl.Component.Forms
 {
     /// <summary>
     /// Форма
@@ -26,7 +26,7 @@ namespace FormControl.Component.Form
         /// <summary>
         /// Девайс Менеджер (в шаблоне XNA в классе Game1 -> graphics)
         /// </summary>
-        protected GraphicsDeviceManager GraphicsDeviceManager;
+        protected GraphicsDeviceManager GraphicsDeviceManager { get; }
         /// <summary>
         /// Образец, для рисование 2D Объектов на Экране
         /// </summary>
@@ -106,7 +106,7 @@ namespace FormControl.Component.Form
         private void __Form_KeyDown(Control sender, KeyEventArgs e) => OnKeyDown(e);
         private void __Form_ScrollDelta(Control sender, MouseEventArgs e) => OnScrollDelta(e);
         private void __Form_MouseUp(Control sender, MouseEventArgs e) => OnMouseUp(e);
-        private void __Form_MouseClick(Control sender, MouseEventArgs e) => MouseClick(null, e);
+        private void __Form_MouseClick(Control sender, MouseEventArgs e) => MouseClick?.Invoke(null, e);
         private void __Form_MouseDrag(Control sender, MouseEventArgs e) => OnMouseDrag(e);
         private void __Form_MouseDown(Control sender, MouseEventArgs e) => OnMouseDown(e);
         private void __Form_MouseMove(Control sender, MouseEventArgs e) => OnMouseMove(e);
@@ -131,7 +131,7 @@ namespace FormControl.Component.Form
         /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
-            PkInputManager.GetInstance.Update(gameTime);
+            PKInputManager.GetInstance.Update();
             base.Update(gameTime);
             _formcontrol.Update(gameTime); // update Form.
         }
@@ -159,7 +159,7 @@ namespace FormControl.Component.Form
         protected override void Initialize()
         {
             base.Initialize();
-            Load(null);
+            Load?.Invoke(null);
             foreach (Control ch in Controls) (ch as IInicializator)?.Inicialize();
         }
         #endregion
@@ -168,55 +168,55 @@ namespace FormControl.Component.Form
         /// <summary>
         /// Вызывается когда форма загружена и нужно загрузить контролы и прочие Объекты
         /// </summary>
-        public event EventHandler Load = delegate { };
+        public event EventHandler Load;
         /// <summary>
         /// Вызывается когда зажимается кнопка мыши в пределах формы
         /// </summary>
-        public event MouseEventHandler MouseDown = delegate { };
+        public event MouseEventHandler MouseDown;
         /// <summary>
         /// Вызывается когда отпускается кнопка мыши в пределах формы
         /// </summary>
-        public event MouseEventHandler MouseUp = delegate { };
+        public event MouseEventHandler MouseUp;
         /// <summary>
         /// Вызывается когда происходит Нажатие и Отпускание мыши в пределах формы (Клик мышкой)
         /// </summary>
-        public event MouseEventHandler MouseClick = delegate { };
+        public event MouseEventHandler MouseClick;
         /// <summary>
         /// Вызывается когда происходит Нажатие и Движение мыши в пределах формы
         /// </summary>
-        public event MouseEventHandler MouseDrag = delegate { };
+        public event MouseEventHandler MouseDrag;
         /// <summary>
         /// Вызывается когда происходит Движение мыши в пределах формы
         /// </summary>
-        public event MouseEventHandler MouseMove = delegate { };
+        public event MouseEventHandler MouseMove;
         /// <summary>
         /// Вызывается когда покрутили Колесико на мышке в пределах Формы
         /// </summary>
-        public event MouseEventHandler ScrollDelta = delegate { };
+        public event MouseEventHandler ScrollDelta;
         /// <summary>
         /// Вызывается когда происходит Нажатие на кнопку в пределах формы
         /// </summary>
-        public event KeyEventHandler KeyDown = delegate { };
+        public event KeyEventHandler KeyDown;
         /// <summary>
         /// Вызывается когда происходит Отпускание кнопки в пределах формы
         /// </summary>
-        public event KeyEventHandler KeyUp = delegate { };
+        public event KeyEventHandler KeyUp;
         /// <summary>
         /// Вызывается когда Кнопка зажата
         /// </summary>
-        public event KeyEventHandler KeyPresed = delegate { }; 
+        public event KeyEventHandler KeyPresed;
         /// <summary>
         /// Метод Рисования, Draw
         /// </summary>
-        public event TickEventHandler Paint = delegate { };
+        public event TickEventHandler Paint;
         /// <summary>
         /// Метод Обновление Кадра, Update
         /// </summary>
-        public event TickEventHandler Invalidate = delegate { };
+        public event TickEventHandler Invalidate;
         /// <summary>
         /// Метод Загрузки Ресурсов, LoadContent
         /// </summary>
-        public event TickEventHandler LoadResourses = delegate { };
+        public event TickEventHandler LoadResourses;
         #endregion
 
         #region Virtuals methods On Event's
@@ -226,7 +226,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnMouseDown(MouseEventArgs e)
         {
-            MouseDown(null, e);
+            MouseDown?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат отпускания кнопки мыши
@@ -234,7 +234,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnMouseUp(MouseEventArgs e)
         {
-            MouseUp(null, e);
+            MouseUp?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат движения мыши
@@ -242,7 +242,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnMouseMove(MouseEventArgs e)
         {
-            MouseMove(null, e);
+            MouseMove?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат движение мыши с зажатой кнопкой мыши
@@ -250,7 +250,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnMouseDrag(MouseEventArgs e)
         {
-            MouseDrag(null, e);
+            MouseDrag?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат колесика
@@ -258,7 +258,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnScrollDelta(MouseEventArgs e)
         {
-            ScrollDelta(null, e);
+            ScrollDelta?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат нажатия клавиши
@@ -266,7 +266,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnKeyDown(KeyEventArgs e)
         {
-            KeyDown(null, e);
+            KeyDown?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат отпускания клавиши
@@ -274,7 +274,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnKeyUp(KeyEventArgs e)
         {
-            KeyUp(null, e);
+            KeyUp?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат зажатия клавиши
@@ -282,7 +282,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnKeyPresed(KeyEventArgs e)
         {
-            KeyPresed(null, e);
+            KeyPresed?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат Обновления кадра Формы
@@ -290,7 +290,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnInvalidate(TickEventArgs e)
         {
-            Invalidate(null, e);
+            Invalidate?.Invoke(null, e);
         }
         /// <summary>
         /// Вызывает делегат Отрисовки кадра Формы
@@ -298,7 +298,7 @@ namespace FormControl.Component.Form
         /// <param name="e"></param>
         protected internal virtual void OnPaint(TickEventArgs e)
         {
-            Paint(null, e);
+            Paint?.Invoke(null, e);
         }
         #endregion
     }

@@ -131,7 +131,7 @@ namespace FormControl
         /// <param name="points">The points to connect with lines</param>
         /// <param name="color">The color to use</param>
         /// <param name="border">The border of the lines</param>
-        public void DrawPath(Vector2 position, List<Vector2> points, Color color, float border)
+        public void DrawPath(Vector2 position, IList<Vector2> points, Color color, float border)
         {
             if(points.Count < 1) return;
             if (points.Count < 2)
@@ -384,7 +384,7 @@ namespace FormControl
         #region Private Methods
         static List<Vector2> CreateCircle(double radius, int sides)
         {
-            string circleKey = $"{radius}x{sides}";
+            string circleKey = "{0}x{1}".DefaultFormat(radius, sides);
             if (CircleCache.ContainsKey(circleKey))
             {
                 return CircleCache[circleKey];

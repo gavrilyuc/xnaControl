@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using FormControl.Component.Controls;
-using FormControl.Component.Form;
+﻿using FormControl.Component.Controls;
+using FormControl.Component.Forms;
 
 namespace FormControl.Mehanic
 {
@@ -13,12 +12,12 @@ namespace FormControl.Mehanic
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="form"></param>
-        public GameState(Form form)
+        /// <param name="userForm"></param>
+        public GameState(Form userForm)
         {
             Enabled = false;
             Visibled = false;
-            _userForm = form;
+            _userForm = userForm;
             Controls.ControlsAdded += Controls_ControlsAdded;
         }
         private static void Controls_ControlsAdded(Component.Layout.DefaultLayuout sender, Control utilizingControl)

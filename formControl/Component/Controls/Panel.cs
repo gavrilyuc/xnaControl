@@ -1,5 +1,4 @@
-﻿using FormControl.Component.Controls.Base;
-
+﻿using FormControl.Component.Layout;
 namespace FormControl.Component.Controls
 {
     /// <summary>
@@ -7,5 +6,14 @@ namespace FormControl.Component.Controls
     /// </summary>
     public class Panel : BorderedControlBase
     {
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
+        public Panel() : this(new DefaultLayuout()) { }
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
+        public Panel(IControlLayout layout) : base(layout) { }
+
     }
 }

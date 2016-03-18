@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-namespace FormControl.Component.Form
+
+namespace FormControl.Component.Forms
 {
     /// <summary>
     /// Настройки формы
@@ -8,10 +9,7 @@ namespace FormControl.Component.Form
     [Serializable] public class FormSettings
     {
         #region Only ALL Screen Sizer
-        /// <summary>
-        /// Все возможные размеры для формы
-        /// </summary>
-        [NonSerialized] public static readonly Point[] ScreenPoints = {
+        [NonSerialized] private static readonly Point[] _screens = {
             new Point(640, 480), new Point(768, 480), new Point(800, 480),
             new Point(800, 600), new Point(960, 540), new Point(960, 720), new Point(1152, 720),
             new Point(1152, 900), new Point(1366, 768), new Point(1280, 720), new Point(1280, 768),
@@ -23,6 +21,10 @@ namespace FormControl.Component.Form
             new Point(2048, 1152), new Point(2048, 1280), new Point(2538, 1080), new Point(2880, 900),
             //todo: Дописать для широко форматных разшерений.
         };
+        /// <summary>
+        /// Все возможные размеры для формы
+        /// </summary>
+        public static Point[] ScreenPoints() => _screens;
         #endregion
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace FormControl.Component.Form
             ContentDirectory = "Content";
             WindowMouseView = false;
             Windowed = true;
-            ScreenSize = ScreenPoints[20];
+            ScreenSize = ScreenPoints()[20];
         }
     }
 }

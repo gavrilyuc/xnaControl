@@ -23,11 +23,11 @@ namespace FormControl.Component.Layout
         /// <summary>
         /// Добавить Контрол в Grid.
         /// </summary>
-        /// <param name="control"></param>
-        public virtual void Add(Control control)
+        /// <param name="item"></param>
+        public virtual void Add(Control item)
         {
-            _containerList.Add(control);
-            ControlsAdded(this, control);
+            _containerList.Add(item);
+            ControlsAdded(this, item);
         }
         /// <summary>
         /// Очистить
@@ -38,18 +38,26 @@ namespace FormControl.Component.Layout
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool Contains(Control item) { return _containerList.Contains(item); }
+        public bool Contains(Control item) => _containerList.Contains(item);
         /// <summary>
         /// Скопировать массив в контейнер
         /// </summary>
         /// <param name="array"></param>
         /// <param name="arrayIndex"></param>
-        public void CopyTo(Control[] array, int arrayIndex) { _containerList.CopyTo(array, arrayIndex); }
+        public void CopyTo(Control[] array, int arrayIndex) => _containerList.CopyTo(array, arrayIndex);
         /// <summary>
         /// Добавить список Контролов в Grid.
         /// </summary>
         /// <param name="listControls"></param>
-        public void AddRange(IEnumerable<Control> listControls) { foreach (Control ch in listControls) Add(ch); }
+        public void AddRange(IEnumerable<Control> listControls)
+        {
+            Control[] enumerable = listControls as Control[] ?? listControls.ToArray();
+            if (enumerable.Length == 0) return;
+            for (int i = 0; i < enumerable.Length; i++)
+            {
+                Add(enumerable[i]);
+            }
+        }
         /// <summary>
         /// Удалить Контрол, зная его индекс
         /// </summary>
@@ -60,36 +68,42 @@ namespace FormControl.Component.Layout
         /// Удалить список контролов из контейнера
         /// </summary>
         /// <param name="listControls"></param>
-        public void RemoveRange(IEnumerable<Control> listControls) { foreach (Control ch in listControls) Remove(ch); }
+        public void RemoveRange(IEnumerable<Control> listControls)
+        {
+            Control[] enumerable = listControls as Control[] ?? listControls.ToArray();
+            if (enumerable.Length == 0) return;
+            for (int i = 0; i < enumerable.Length; i++)
+                Remove(enumerable[i]);
+        }
         /// <summary>
         /// Удалить контрол
         /// </summary>
-        /// <param name="control"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        public virtual bool Remove(Control control)
+        public virtual bool Remove(Control item)
         {
-            bool res = _containerList.Remove(control);
-            control.ParentControl = null;// Delete Parent.
-            ControlsRemoved(this, control);
-            return res;
+            if (!_containerList.Remove(item)) return false;
+            item.ParentControl = null; // Delete Parent.
+            ControlsRemoved(this, item);
+            return true;
         }
         /// <summary>
         /// Поиск индекса контрола в текущем контейнере
         /// </summary>
-        /// <param name="control"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        public int IndexOf(Control control) => _containerList.IndexOf(control);
+        public int IndexOf(Control item) => _containerList.IndexOf(item);
         /// <summary>
         /// Вставить контрол
         /// </summary>
         /// <param name="index"></param>
         /// <param name="item"></param>
-        public void Insert(int index, Control item) { _containerList.Insert(index, item); }
+        public void Insert(int index, Control item) => _containerList.Insert(index, item);
         /// <summary>
         /// Удалить всё начиная с индекса
         /// </summary>
         /// <param name="index"></param>
-        public void RemoveAt(int index) { _containerList.RemoveAt(index); }
+        public void RemoveAt(int index) => _containerList.RemoveAt(index);
         /// <summary>
         /// Поиск контрола по имени.
         /// </summary>
@@ -138,7 +152,13 @@ namespace FormControl.Component.Layout
                 _containerList[IndexOf(FindFromName(name))] = value;
             }
         }
-
+        /// <summary>
+        /// Отсортировать Контролы по их Bottom позиции
+        /// </summary>
+        public void Sort()
+        {
+            _containerList.Sort((x, y) => x.ClientRectangle.Bottom.CompareTo(y.ClientRectangle.Bottom));
+        }
         /// <summary></summary><returns></returns>
         public IEnumerator<Control> GetEnumerator() => _containerList.GetEnumerator();
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _containerList.GetEnumerator();

@@ -1,9 +1,9 @@
 ﻿using System;
-using FormControl.Component.Controls.Base;
+using System.ComponentModel;
+using FormControl.Component.Layout;
 using FormControl.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using static Microsoft.Xna.Framework.Input.Keys;
 
 namespace FormControl.Component.Controls
 {
@@ -19,7 +19,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Размер коретки
         /// </summary>
-        public int Size;
+        public int Size { get; set; }
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
@@ -30,6 +30,20 @@ namespace FormControl.Component.Controls
             Color = color;
             Size = size;
         }
+
+        /// <summary></summary><param name="obj"></param><returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Coretka)) return false;
+            Coretka lk = (Coretka)obj;
+            return (lk.Color == Color && lk.Size == Size);
+        }
+        /// <summary></summary><returns></returns>
+        public override int GetHashCode() => base.GetHashCode();
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator ==(Coretka a, Coretka b) => a.Equals(b);
+        /// <summary></summary><param name="a"></param><param name="b"></param><returns></returns>
+        public static bool operator !=(Coretka a, Coretka b) => !(a == b);
     }
 
     /// <summary>
@@ -50,6 +64,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Свойства коретки
         /// </summary>
+        [Category(PropertyGridCategoriesText.BasicCategory)]
         public Coretka CoretkaInfo
         {
             get { return _coretka; }
@@ -62,14 +77,20 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Максимальная длина вводимого текста
         /// </summary>
+        [Category(PropertyGridCategoriesText.UsersCategory)]
         public int MaxLenght { get; set; } = -1;
         #endregion
-
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush">DON'T NULL</param>
-        public TextBox(TextBrush brush) : base(brush)
+        /// <param name="brush"></param>
+        public TextBox(TextBrush brush) : this(brush, new DefaultLayuout()) { }
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
+        /// <param name="brush"></param>
+        /// <param name="layout"></param>
+        public TextBox(TextBrush brush, IControlLayout layout) : base(brush, layout)
         {
             AutoSize = false;
             CoretkaInfo = new Coretka(Color.Red, 1);
@@ -88,10 +109,11 @@ namespace FormControl.Component.Controls
         }
 
         #region Event's
+        private const string QuantitySized = "Q";
         private void TextBox_ResizeControl(Control sender)
         {
             _coretkaSize = new Vector2(_coretka.Size, Size.Y);
-            Vector2 szS = Font.MeasureString("Q");
+            Vector2 szS = Font.MeasureString(QuantitySized);
             if (AutoSize) MaxLenght = (int)Math.Ceiling(Size.X / szS.X) - 1;
         }
         private void TextBox_MouseDown(Control sender, MouseEventArgs e)
@@ -114,7 +136,7 @@ namespace FormControl.Component.Controls
             _isPress = false;
         }
         private static readonly Keys[] KeyInPresedLonger = new[] {
-            Back, Delete, Left, Right
+            Keys.Back, Keys.Delete, Keys.Left, Keys.Right
         };
         private void TextBox_KeyPresed(Control sender, KeyEventArgs e)
         {
@@ -138,14 +160,14 @@ namespace FormControl.Component.Controls
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (e.KeyCode)
             {
-                case Left: _positionCoretka = Math.Max(_positionCoretka - 1, 0); break;
-                case Right: _positionCoretka = Math.Min(_positionCoretka + 1, Text.Length); break;
-                case Home: _positionCoretka = 0; break;
-                case End: _positionCoretka = Text.Length; break;
-                case Delete: {
+                case Keys.Left: _positionCoretka = Math.Max(_positionCoretka - 1, 0); break;
+                case Keys.Right: _positionCoretka = Math.Min(_positionCoretka + 1, Text.Length); break;
+                case Keys.Home: _positionCoretka = 0; break;
+                case Keys.End: _positionCoretka = Text.Length; break;
+                case Keys.Delete: {
                     if (Text.Length >= 1 && Text.Length - _positionCoretka > 0) Text = Text.Remove(_positionCoretka, 1);
                 } break;
-                case Back: {
+                case Keys.Back: {
                     if (Text.Length >= 1)
                     {
                         if (_positionCoretka >= Text.Length)
@@ -184,19 +206,6 @@ namespace FormControl.Component.Controls
         }
 
         #region Statics Fields
-        private struct MyVector : IDrawablingTransformation
-        {
-            public Vector2 DrawabledLocation => location;
-            public Rectangle ClientRectangle => Rectangle.Empty;
-            public Vector2 location;
-            public Vector2 size;
-            public MyVector(Vector2 location, Vector2 size)
-            {
-                this.location = location;
-                this.size = size;
-            }
-        }
-        private static MyVector _drawableProperty;
         private static char _paintChar = ' ';
         private static int _iterationPaint = 0;
         private Vector2 _coretkaSize;
@@ -205,29 +214,30 @@ namespace FormControl.Component.Controls
         private void TextBox_Paint(Control sendred, TickEventArgs e)
         {
             if (Text == null || Font == null) return;
-            _drawableProperty.location = DrawabledLocation;
-            _drawableProperty.location.X += 3;
+            Point location = new Point(DrawabledLocation.X.ToInt(), DrawabledLocation.Y.ToInt());
+            Point size;
+            location.X += 3;
             _iterationPaint = 0;
             for (; _iterationPaint < Text.Length; _iterationPaint++)
             {
                 if (Focused && _positionCoretka == _iterationPaint)
                 {
-                    e.Graphics.FillRectangle(_drawableProperty.location, _coretkaSize, CoretkaInfo.Color);
-                    _drawableProperty.location.X += CoretkaInfo.Size + 1;
+                    e.Graphics.FillRectangle(location.ConvertToVector(), _coretkaSize, CoretkaInfo.Color);
+                    location.X += CoretkaInfo.Size + 1;
                 }
 
                 // set Parameters draw Text
                 _paintChar = Text[_iterationPaint];
-                _drawableProperty.size = Font.MeasureString(_paintChar.ToString());
+                size = Font.MeasureString(_paintChar.ToString()).ConvertToPoint();
                 TextBrush.Text = _paintChar.ToString();
 
-                TextBrush.AlgorithmDrawable(e.Graphics, e.GameTime, _drawableProperty);// draw text from Algoritme Brush
+                TextBrush.AlgorithmDrawable(e.Graphics, e.GameTime, new Rectangle(location.X, location.Y, size.X, size.Y));// draw text from Algoritme Brush
 
-                _drawableProperty.location.X += _drawableProperty.size.X;
+                location.X += size.X;
             }
             if (!Focused || _positionCoretka != _iterationPaint) return;
-            e.Graphics.FillRectangle(_drawableProperty.location, new Vector2(CoretkaInfo.Size, Size.Y), CoretkaInfo.Color);
-            _drawableProperty.location.X += CoretkaInfo.Size + CoretkaInfo.Size;
+            e.Graphics.FillRectangle(location.ConvertToVector(), new Vector2(CoretkaInfo.Size, Size.Y), CoretkaInfo.Color);
+            location.X += CoretkaInfo.Size + CoretkaInfo.Size;
         }
         #endregion
     }

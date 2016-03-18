@@ -23,11 +23,31 @@ namespace FormControl.Drawing.Brushes
         /// <param name="region"></param>
         public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, IDrawablingTransformation region)
         {
-            if (Texture != null)
-                graphics.Draw(Texture, region.ClientRectangle, Color);
+            AlgorithmDrawable(graphics, gameTime, region.ClientRectangle);
         }
-        
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="position"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Vector2 position)
+        {
+            Point p = position.ConvertToPoint();
+            AlgorithmDrawable(graphics, gameTime, new Rectangle(p.X, p.Y, Texture.Width, Texture.Height));
+        }
+        /// <summary>
+        /// Алгоритм отрисовки кисти
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="rectangle"></param>
+        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Rectangle rectangle)
+        {
+            if (Texture != null)
+                graphics.Draw(Texture, rectangle, Color);
+        }
         /// <summary></summary><returns></returns>
-        protected override Brush GetInctance() => new SolidTextureBrush(Texture, Color);
+        protected override Brush GetInctance => new SolidTextureBrush(Texture, Color);
     }
 }
