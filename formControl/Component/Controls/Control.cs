@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using FormControl.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -405,7 +404,10 @@ namespace FormControl.Component.Controls
                 ParentChanged?.Invoke(this);
             }
         }
-        internal bool LockedTransformation { get; set; } = false;
+        /// <summary>
+        /// Заблокировать возможность изменять Location и Size
+        /// </summary>
+        protected bool LockedTransformation { get; set; }
         /// <summary>
         /// Установить Блок на изменение размеров и позиции контрола.
         /// </summary>

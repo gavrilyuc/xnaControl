@@ -1,4 +1,4 @@
-using FormControl.Component.Form;
+using FormControl.Component.Forms;
 
 namespace demo
 {

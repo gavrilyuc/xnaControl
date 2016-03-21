@@ -311,6 +311,11 @@
             Форма, в которой находится контрол
             </summary>
         </member>
+        <member name="P:FormControl.Component.Controls.Control.LockedTransformation">
+            <summary>
+            Заблокировать возможность изменять Location и Size
+            </summary>
+        </member>
         <member name="M:FormControl.Component.Controls.Control.SetControlLockedTransformation(FormControl.Component.Controls.Control,System.Boolean)">
             <summary>
             Установить Блок на изменение размеров и позиции контрола.

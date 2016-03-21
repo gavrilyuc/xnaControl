@@ -63,8 +63,13 @@ namespace FormControl.Component.Controls
         private void ComboBox_Paint(Control sender, TickEventArgs e)
         {
             if(SelectedControl == null) return;
+
+            int borderLength = Border?.BorderLenght ?? 0;
+
             _selectText = new Rectangle((int)(DrawabledLocation.X + _arrow.Location.X + _arrow.Size.X),
-                (int)DrawabledLocation.Y, (int)Size.X, (int)Size.Y);
+                (int)(DrawabledLocation.Y + borderLength), (int)(Size.X - _arrow.Size.X),
+                (int)(Size.Y - borderLength));
+
             TextControlBase f = SelectedControl as TextControlBase;
             if (f != null)
             {
@@ -100,13 +105,14 @@ namespace FormControl.Component.Controls
         }
         private void ComboBox_ResizeControl(Control sender)
         {
-            _arrow.LockedTransformation = false;
+            SetControlLockedTransformation(_arrow, false);
             _arrow.Size = new Vector2(20, 100);
+            _arrow.Location = Vector2.Zero;
 
             _contaier.ItemSize = Size;
 
-            _contaier.LockedTransformation = false;
-            _contaier.Size = new Vector2(80, 100);
+            SetControlLockedTransformation(_contaier, false);
+            _contaier.Size = new Vector2(100, 100);
             _contaier.Location = new Vector2(0, 100);
 
             ((ProcentLayout)Controls).SetContainerTransformation(this);

@@ -26,7 +26,7 @@ namespace FormControl.Component.Controls
             {
                 _sel = value;
                 if (_isSendered)
-                    SelectedIndexChanged(this);
+                    SelectedIndexChanged?.Invoke(this);
             }
         }
         /// <summary>
@@ -66,7 +66,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Вызывается когда происходит изменение индекса выделеного Объекта
         /// </summary>
-        public event EventHandler SelectedIndexChanged = delegate { };
+        public event EventHandler SelectedIndexChanged;
 
         /// <summary>
         /// Конструктор по умолчанию
@@ -89,14 +89,15 @@ namespace FormControl.Component.Controls
         #region Events
         private void UnFixableItemSize(DefaultLayuout sender, Control utilizingControl)
         {
-            utilizingControl.LockedTransformation = false; // UnSet locking Transformations...
+            SetControlLockedTransformation(utilizingControl, false);// UnSet locking Transformations...
             InvalidateSize();
         }
         private void FixableItemSize(DefaultLayuout sender, Control utilizingControl)
         {
             utilizingControl.Size = ItemSize;
-            utilizingControl.LockedTransformation = true; // set locking Transformations...
+            SetControlLockedTransformation(utilizingControl); // set locking Transformations...
             utilizingControl.MouseDown += ListBox_MouseDown;
+
             utilizingControl.MouseUp += ListBox_MouseUp;
             InvalidateSize();
         }
@@ -120,9 +121,9 @@ namespace FormControl.Component.Controls
         {
             for (int i = 0; i < Controls.Count; i++)
             {
-                Controls[i].LockedTransformation = false;
+                SetControlLockedTransformation(Controls[i], false);
                 Controls[i].Location = new Vector2(0, i * ItemSize.Y);
-                Controls[i].LockedTransformation = true;
+                SetControlLockedTransformation(Controls[i]);
             }
             InvalidateSize();
         }
@@ -143,10 +144,10 @@ namespace FormControl.Component.Controls
             base.OnVisibleControlsSetter(value);
             for (int i = 0; i < Controls.Count; i++)
             {
-                Controls[i].LockedTransformation = false;
+                SetControlLockedTransformation(Controls[i], false);
                 Controls[i].Location = new Vector2(0, i * ItemSize.Y);
                 Controls[i].Size = new Vector2(Size.X, ItemSize.Y);
-                Controls[i].LockedTransformation = true;
+                SetControlLockedTransformation(Controls[i]);
             }
             InvalidateSize();
         }
@@ -156,9 +157,9 @@ namespace FormControl.Component.Controls
             base.Inicialize();
             for (int i = 0; i < Controls.Count; i++)
             {
-                Controls[i].LockedTransformation = false;
+                SetControlLockedTransformation(Controls[i], false);
                 Controls[i].Location = new Vector2(0, i * ItemSize.Y);
-                Controls[i].LockedTransformation = true;
+                SetControlLockedTransformation(Controls[i]);
             }
         }
     }

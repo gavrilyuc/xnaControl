@@ -21,7 +21,7 @@ namespace FormControl.Component.Controls
             set
             {
                 _border = value;
-                BorderChanged(this);
+                BorderChanged?.Invoke(this);
             }
         }
 
@@ -34,18 +34,18 @@ namespace FormControl.Component.Controls
             set
             {
                 _background = value;
-                BackgroundChanged(this);
+                BackgroundChanged?.Invoke(this);
             }
         }
 
         /// <summary>
         /// Вызывается тогда когда изменяется свойство Border
         /// </summary>
-        public event EventHandler BorderChanged = delegate(Control sender) { };
+        public event EventHandler BorderChanged;
         /// <summary>
         /// Вызывается тогда когда изменяется свойство Background
         /// </summary>
-        public event EventHandler BackgroundChanged = delegate (Control sender) { };
+        public event EventHandler BackgroundChanged;
 
         /// <summary>
         /// Конструктор по умолчанию

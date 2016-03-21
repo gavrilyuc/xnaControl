@@ -1,11 +1,11 @@
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
 
 using FormControl;
 using FormControl.Component;
 using FormControl.Component.Controls;
-using FormControl.Component.Form;
+using FormControl.Component.Forms;
 using FormControl.Drawing.Brushes;
 using FormControl.Input;
 using FormControl.Mehanic;
@@ -14,7 +14,7 @@ namespace demo
 {
     public class Game1 : Form
     {
-        private FpsControl fps;
+        private FpsControl _fps;
 
         private Panel _p;
         private Button _b;
@@ -37,13 +37,13 @@ namespace demo
             // Form Inicialize & Generate GUI
             // and Other Inicializator...
             // xna method: Inicialize
-            fps = new FpsControl(_baseFont);
+            _fps = new FpsControl(_baseFont);
 
             _p = new Panel() {
                 Location = new Vector2(200, 100),
                 Size = new Vector2(400, 300),
                 Background = new SolidColorBrush(Color.White),
-                BorderBrush = new DefaultBorderBrush(1, Color.Blue)
+                Border = new DefaultBorderBrush(1, Color.Blue)
             };
             DefaultTextBrush defaultBrush = new DefaultTextBrush(_baseFont, Color.Black);
             _b = new Button(defaultBrush) {
@@ -52,7 +52,7 @@ namespace demo
                 Text = "TMP Button",
                 ColorText = Color.Black,
                 Background = new SolidColorBrush(Color.White),
-                BorderBrush = new DefaultBorderBrush(1, Color.Black),
+                Border = new DefaultBorderBrush(1, Color.Black),
                 Name = "Super Button"
             };
             _p.Controls.Add(_b);
@@ -62,7 +62,7 @@ namespace demo
 
             _textBox = new TextBox(new DefaultTextBrush(_baseFont, Color.Purple)) {
                 AutoSize = false,
-                BorderBrush = new DefaultBorderBrush(1, Color.Lime),
+                Border = new DefaultBorderBrush(1, Color.Lime),
                 Background = new SolidColorBrush(Color.Silver),
                 Location = new Vector2(250, 250),
                 Size = new Vector2(100, 30),
@@ -117,10 +117,11 @@ namespace demo
         private void Game1_Invalidate(Control sendred, TickEventArgs e)
         {
             GameTime gameTime = e.GameTime;
-            fps.Update(gameTime);
+            _fps.Update(gameTime);
+
             // Form Update
             // xna Method: Update
-            string tmp = PkInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("You Key Down: ",
+            string tmp = PKInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("You Key Down: ",
                 (current, key) => current + (key + Separator));
             tmp = tmp.TrimEnd(Separator);
             
@@ -134,7 +135,8 @@ namespace demo
         {
             // Form Paint
             Graphics graphics = e.Graphics;
-            fps.Draw(graphics, e.GameTime);
+
+            _fps.Draw(graphics, e.GameTime);
 
             if (!_isDrawing) return;
             graphics.DrawRectangle(new Rectangle(50, 50, 200, 200), Color.Red, 3f);

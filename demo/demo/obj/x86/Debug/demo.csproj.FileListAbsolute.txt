@@ -59,7 +59,6 @@ D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.GamerServi
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\formControl.pdb
-D:\Project\xnaControl\demo\demo\bin\x86\Debug\formControl.xml
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.xml
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
 D:\Project\xnaControl\demo\demo\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml

@@ -25,13 +25,13 @@ namespace FormControl.Component.Layout
             for (int i = 0; i < Count; i++)
             {
                 item = this[i];
-                item.LockedTransformation = false;
+                Control.SetControlLockedTransformation(item, false);
                 item.Location = Vector2.Min(Vector2.Max(Vector2.Zero, item.Location), FullProcent);
                 item.Location *= _procentContainer;
 
                 item.Size = Vector2.Min(Vector2.Max(Vector2.Zero, item.Size), FullProcent);
                 item.Size *= _procentContainer;
-                item.LockedTransformation = true;
+                Control.SetControlLockedTransformation(item);
             }
         }
 
@@ -41,13 +41,13 @@ namespace FormControl.Component.Layout
         /// <param name="item"></param>
         public override void Add(Control item)
         {
-            item.LockedTransformation = false;
+            Control.SetControlLockedTransformation(item, false);
             item.Location = Vector2.Min(Vector2.Max(Vector2.Zero, item.Location), FullProcent);
             item.Location *= _procentContainer;
 
             item.Size = Vector2.Min(Vector2.Max(Vector2.Zero, item.Size), FullProcent);
             item.Size *= _procentContainer;
-            item.LockedTransformation = true;
+            Control.SetControlLockedTransformation(item);
 
             base.Add(item);
         }
