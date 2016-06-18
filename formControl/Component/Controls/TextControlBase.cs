@@ -18,7 +18,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Текст
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersCategory)] public string Text
+        public string Text
         {
             get { return _s; }
             set
@@ -31,19 +31,17 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Цвет Текста
         /// </summary>
-        [Category(PropertyGridCategoriesText.GraphicsCategory)]
         public Color ColorText { get { return TextBrush.Color; }set { TextBrush.Color = value; } }
 
         /// <summary>
         /// Шрифт взятый из Кисти отрисовки
         /// </summary>
-        [Category(PropertyGridCategoriesText.GraphicsCategory)]
         public SpriteFont Font => TextBrush.Font;
 
         /// <summary>
         /// Кисть рисования Текста
         /// </summary>
-        [Category(PropertyGridCategoriesText.GraphicsCategory)] public TextBrush TextBrush
+        public TextBrush TextBrush
         {
             get { return _textBrush; }
             set
@@ -56,7 +54,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Автоматически определять размер кнопки
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersCategory)]
         public bool AutoSize
         {
             get { return LockedTransformation; }

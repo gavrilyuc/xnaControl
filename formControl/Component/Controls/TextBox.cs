@@ -64,7 +64,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Свойства коретки
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)]
         public Coretka CoretkaInfo
         {
             get { return _coretka; }
@@ -77,7 +76,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Максимальная длина вводимого текста
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersCategory)]
         public int MaxLenght { get; set; } = -1;
         #endregion
         /// <summary>

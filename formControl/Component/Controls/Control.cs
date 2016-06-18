@@ -32,11 +32,11 @@ namespace FormControl.Component.Controls
         /// Констрктор для Базовой Инициализации
         /// </summary>
         /// <param name="window">Окно в котором будут Отображаться Контролы</param>
-        /// <param name="layout"></param>
-        internal Control(IWindow window, IControlLayout layout) : this(layout)
+        internal static void ControlInicializer(IWindow window)
         {
             if (Graphics == null) Graphics = window.Graphics2D;
             if (Window == null) Window = window;
+
             _ticks = new TickEventArgs(Window, null);
             _mouseEventArgs = new MouseEventArgs();
             _keyEventArgs = new KeyEventArgs();
@@ -148,29 +148,6 @@ namespace FormControl.Component.Controls
         private static MouseEventArgs _mouseEventArgs;
         private static KeyEventArgs _keyEventArgs;
 
-        internal virtual void Draw(GameTime gameTime)
-        {
-            _isBlockedMouse = false;
-            _isBlockedKeyBoard = false;
-            if (Visibled == false) return;
-            _ticks.GameTime = gameTime;
-            OnPaint(_ticks);
-        }
-        internal virtual void Update(GameTime gameTime)
-        {
-            if (Enabled == false) return;
-            for (int i = Controls.Count - 1; i > -1; i--)
-            {
-                //Controls[i].DrawabledLocation = DrawabledLocation;
-                Controls[i].Update(gameTime);
-            }
-
-            if (!_isBlockedMouse) MouseUpdate(gameTime);
-            if (!_isBlockedKeyBoard) KeyboardUpdate(gameTime);
-
-            _ticks.GameTime = gameTime;
-            OnInvalidate(_ticks);
-        }
         private void MouseUpdate(GameTime gameTime)
         {
             if (_isBlockedMouse) return;
@@ -279,6 +256,38 @@ namespace FormControl.Component.Controls
             Focused = true;
             _isClick = true;
         }
+
+        /// <summary>
+        /// Отрисовать контрол
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected virtual void Draw(GameTime gameTime)
+        {
+            _isBlockedMouse = false;
+            _isBlockedKeyBoard = false;
+            if (Visibled == false) return;
+            _ticks.GameTime = gameTime;
+            OnPaint(_ticks);
+        }
+        /// <summary>
+        /// Обновить кадр контрола
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected virtual void Update(GameTime gameTime)
+        {
+            if (Enabled == false) return;
+            for (int i = Controls.Count - 1; i > -1; i--)
+            {
+                //Controls[i].DrawabledLocation = DrawabledLocation;
+                Controls[i].Update(gameTime);
+            }
+
+            if (!_isBlockedMouse) MouseUpdate(gameTime);
+            if (!_isBlockedKeyBoard) KeyboardUpdate(gameTime);
+
+            _ticks.GameTime = gameTime;
+            OnInvalidate(_ticks);
+        }
         #endregion
 
         #region Public Properties
@@ -289,16 +298,16 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Имя Контрола, Используется для распознавания Уникальных Контролов
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public string Name { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Контейнер для Контролов
         /// </summary>
-        public IControlLayout Controls { get; }
+        public IControlLayout Controls { get; internal set; }
 
         /// <summary>
         /// Позиция контрола
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public Vector2 Location
+        public Vector2 Location
         {
             get { return _l; }
             set
@@ -311,7 +320,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Размеры контрола
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public Vector2 Size
+        public Vector2 Size
         {
             get { return _s; }
             set
@@ -324,7 +333,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Глобальные координаты контрола, относительно окна
         /// </summary>
-        [DisplayName("Location Drawable"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
         public Vector2 DrawabledLocation
         {
             get { return Location + _parrentLocation; }
@@ -333,17 +341,15 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Глобальная Клиенская область контрола, относительно окна
         /// </summary>
-        [DisplayName("Client Rectangle"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
         public Rectangle ClientRectangle => new RectangleF(DrawabledLocation.X, DrawabledLocation.Y, Size.X, Size.Y).ToRectangle();
         /// <summary>
         /// Клиенская область контрола
         /// </summary>
-        [DisplayName("Client Size"), Category(PropertyGridCategoriesText.RedaOnlyCategory)]
         public RectangleF ClientSize => new RectangleF(0f, 0f, Size.X, Size.Y);
         /// <summary>
         /// Ли данный Контрол Содержит Фокус пользователя.
         /// </summary>
-        [Category(PropertyGridCategoriesText.OtherCategory)] public bool Focused
+        public bool Focused
         {
             get { return _focus == this; }
             set
@@ -357,7 +363,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Ли должен рисоваться данный Объект
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public bool Visibled
+        public bool Visibled
         {
             get { return _isDrawabled; }
             set
@@ -369,7 +375,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Должны Ли Обрабатываться События Контрола
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public bool Enabled
+        public bool Enabled
         {
             get { return _isEnabled; }
             set
@@ -382,7 +388,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Пользовательское Свойство, для хранение пользовательских Данных
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)] public object Tag { get; set; }
+        public object Tag { get; set; }
 
         /// <summary>
         /// Объект Графики, для рисования

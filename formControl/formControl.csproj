@@ -13,7 +13,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaProfile>Reach</XnaProfile>
+    <XnaProfile>HiDef</XnaProfile>
     <XnaCrossPlatformGroupID>fc71f46c-837e-43ef-bab7-6ac5c408387f</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
   </PropertyGroup>
@@ -77,12 +77,13 @@
     <Compile Include="Component\Controls\Button.cs" />
     <Compile Include="Component\Controls\Label.cs" />
     <Compile Include="Component\Controls\ListBox.cs" />
+    <Compile Include="Component\Forms\DefaultGameWindow.cs" />
+    <Compile Include="Component\Forms\GameWindow.cs" />
     <Compile Include="Component\IControl.cs" />
     <Compile Include="Component\Layout\ILayout.cs" />
     <Compile Include="Component\Controls\Panel.cs" />
     <Compile Include="Component\Controls\TextBox.cs" />
     <Compile Include="Component\Layout\ProcentLayout.cs" />
-    <Compile Include="Component\PropertyGridCategoriesText.cs" />
     <Compile Include="Drawing\BorderBrush.cs" />
     <Compile Include="Drawing\Brush.cs" />
     <Compile Include="Drawing\Brushes\DefaultBorderBrush.cs" />
