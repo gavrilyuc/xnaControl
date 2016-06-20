@@ -42,10 +42,6 @@ namespace FormControl.Component
         /// </summary>
         event MouseEventHandler Click;
         /// <summary>
-        /// Вызывается когда происходит зажатое движение мыши
-        /// </summary>
-        event MouseEventHandler MouseDrag;
-        /// <summary>
         /// Движение мыши на объекту
         /// </summary>
         event MouseEventHandler MouseMove;
