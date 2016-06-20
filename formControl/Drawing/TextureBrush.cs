@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace FormControl.Drawing
 {
     /// <summary>
-    /// Цветовая Кисть
+    /// Текструная Кисть
     /// </summary>
     public abstract class TextureBrush : ColorBrush
     {

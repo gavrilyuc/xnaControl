@@ -13,14 +13,12 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
-        public Button(TextBrush brush) : this(brush, new DefaultLayuout()) { }
+        public Button() : this(new DefaultLayuout()) { }
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
         /// <param name="layout"></param>
-        public Button(TextBrush brush, IControlLayout layout) : base(brush, layout)
+        public Button(IControlLayout layout) : base(layout)
         {
             AutoSize = false;
             Paint += Button_Paint;

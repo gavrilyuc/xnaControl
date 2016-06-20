@@ -6,7 +6,7 @@ namespace FormControl.Drawing.Brushes
     /// <summary>
     /// Сплошная Заливка цветом
     /// </summary>
-    public class SolidColorBrush : ColorBrush, ICloneable<SolidColorBrush>
+    public class SolidColorBrush : ColorBrush
     {
         /// <summary>
         /// Алгоритм отрисовки кисти
@@ -39,14 +39,9 @@ namespace FormControl.Drawing.Brushes
         {
             graphics.FillRectangle(rectangle, Color);
         }
-        /// <summary></summary><returns></returns>
-        protected override Brush GetInctance => Clone();
+        /// <summary/>
+        protected override Brush GetInctance => new SolidColorBrush(Color);
 
-        /// <summary>
-        /// Клонировать Объект
-        /// </summary>
-        /// <returns></returns>
-        public new SolidColorBrush Clone() => new SolidColorBrush(Color);
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>

@@ -105,13 +105,7 @@ namespace FormControl.Input
         /// <returns></returns>
         public bool MouseDown(MouseButton type)
         {
-            switch (type)
-            {
-                case MouseButton.Left: return MouseState.LeftButton == ButtonState.Pressed;
-                case MouseButton.Right: return MouseState.RightButton == ButtonState.Pressed;
-                case MouseButton.Midle: return MouseState.MiddleButton == ButtonState.Pressed;
-                default: return false;
-            }
+            return _MouseDown(type, MouseState);
         }
         /// <summary>
         /// Ли кнопка отпущена
@@ -120,7 +114,18 @@ namespace FormControl.Input
         /// <returns></returns>
         public bool MouseUp(MouseButton type)
         {
-            return _MouseUp(type, MouseState);
+            return _MouseDown(type, LastMouseState) && _MouseUp(type, MouseState);
+        }
+
+        private static bool _MouseDown(MouseButton type, MouseState state)
+        {
+            switch (type)
+            {
+                case MouseButton.Left: return state.LeftButton == ButtonState.Pressed;
+                case MouseButton.Right: return state.RightButton == ButtonState.Pressed;
+                case MouseButton.Midle: return state.MiddleButton == ButtonState.Pressed;
+                default: return false;
+            }
         }
         private static bool _MouseUp(MouseButton type, MouseState state)
         {

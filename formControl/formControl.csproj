@@ -89,8 +89,11 @@
     <Compile Include="Drawing\Brushes\DefaultBorderBrush.cs" />
     <Compile Include="Drawing\Brushes\DefaultTextBrush.cs" />
     <Compile Include="Drawing\Brushes\SolidColorBrush.cs" />
+    <Compile Include="Drawing\Brushes\SolidRegionedTextureBrush.cs" />
+    <Compile Include="Drawing\RegionedTextureBrush.cs" />
     <Compile Include="Drawing\Brushes\SolidTextureBrush.cs" />
     <Compile Include="Drawing\ColorBrush.cs" />
+    <Compile Include="Drawing\Cursors\Cursor.cs" />
     <Compile Include="Drawing\TextBrush.cs" />
     <Compile Include="Drawing\TextureBrush.cs" />
     <Compile Include="GlobalSuppressions.cs" />

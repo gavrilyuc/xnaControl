@@ -153,12 +153,6 @@ namespace FormControl.Component.Forms
             foreach (IContent ch in Controls.OfType<IContent>()) ch.LoadContent(Content);
         }
         /// <summary>
-        /// Вызывается после инициализации всех компонентов, но перед первым обновлением в цикле игры.
-        /// </summary>
-        protected virtual void BeginRun()
-        {
-        }
-        /// <summary>
         /// Вызывается после остановки цикла игры перед выходом.
         /// </summary>
         protected virtual void EndRun()

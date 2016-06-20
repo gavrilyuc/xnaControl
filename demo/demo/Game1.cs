@@ -47,8 +47,9 @@ namespace demo
                 Border = new DefaultBorderBrush(1, Color.Blue)
             };
             DefaultTextBrush defaultBrush = new DefaultTextBrush(_baseFont, Color.Black);
-            _b = new Button(defaultBrush)
+            _b = new Button()
             {
+                TextBrush = defaultBrush,
                 Location = new Vector2(10, 10),
                 Size = new Vector2(150, 40),
                 Text = "TMP Button",
@@ -62,13 +63,15 @@ namespace demo
             _b.Click += b_MouseClick;
             _p.Click += p_MouseClick;
 
-            _textBox = new TextBox(new DefaultTextBrush(_baseFont, Color.Purple))
+            _textBox = new TextBox()
             {
+                TextBrush = new DefaultTextBrush(_baseFont, Color.Purple),
                 AutoSize = false,
                 Border = new DefaultBorderBrush(1, Color.Lime),
                 Background = new SolidColorBrush(Color.Silver),
                 Location = new Vector2(250, 250),
                 Size = new Vector2(100, 30),
+                Text = "Sample Text",
                 MaxLenght = 13
             };
 

@@ -24,38 +24,6 @@ namespace FormControl.Drawing
         /// <param name="font"></param>
         /// <param name="color"></param>
         protected TextBrush(SpriteFont font, Color color) : base(color) { Font = font; }
-        /// <summary>
-        /// Алгоритм отрисовки кисти
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="gameTime"></param>
-        /// <param name="region"></param>
-        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, IDrawablingTransformation region)
-        {
-            AlgorithmDrawable(graphics, gameTime, region.DrawabledLocation);
-        }
-        /// <summary>
-        /// Алгоритм отрисовки кисти
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="gameTime"></param>
-        /// <param name="position"></param>
-        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Vector2 position)
-        {
-            if (Font != null && Text != null)
-                graphics.DrawString(Font, Text, position, Color);
-
-        }
-        /// <summary>
-        /// Алгоритм отрисовки кисти
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="gameTime"></param>
-        /// <param name="rectangle"></param>
-        public override void AlgorithmDrawable(Graphics graphics, GameTime gameTime, Rectangle rectangle)
-        {
-            AlgorithmDrawable(graphics, gameTime, rectangle.Location.ConvertToVector());
-        }
     }
 
 }

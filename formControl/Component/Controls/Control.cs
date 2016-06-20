@@ -13,17 +13,19 @@ namespace FormControl.Component.Controls
     {
         #region Variables
         private Vector2 _parrentLocation;
-        private bool _isDraged;
         private Vector2 _l, _s;
         private bool _isInputMouse;
         private bool _isEnabled;
         private bool _isDrawabled;
         private Control _parentControl;
+
         private static bool _isBlockedMouse;
         private static bool _isBlockedKeyBoard;
         private static bool _isClick;
         private static Control _focus;
         private static bool _isMouseDown;
+        private static Control _mouseDowndedControl;
+
         private static readonly PKInputManager Input = PKInputManager.GetInstance; // Input (Mouse & KeyBoard) Manager.
         #endregion
 
@@ -54,7 +56,6 @@ namespace FormControl.Component.Controls
             Controls = layout;
             MouseDown += Control_MouseDown;
             MouseUp += Control_MouseUp;
-            MouseMove += Control_MouseMove;
             Visibled = true;
             Enabled = true;
             Focused = false;
@@ -85,10 +86,6 @@ namespace FormControl.Component.Controls
         /// Нажатие мыши на объекту
         /// </summary>
         public event MouseEventHandler Click;
-        /// <summary>
-        /// Вызывается когда происходит зажатое движение мыши
-        /// </summary>
-        public event MouseEventHandler MouseDrag;
         /// <summary>
         /// Движение мыши на объекту
         /// </summary>
@@ -166,29 +163,45 @@ namespace FormControl.Component.Controls
 
             if (isInputPos)
             {
-                if (Input.MouseDown(MouseButton.Left)) OnMouseDown(_mouseEventArgs);
-                else if (Input.MouseDown(MouseButton.Right))
+                // mouse down
+                if (Input.MouseDown(MouseButton.Left) && !_isMouseDown)
                 {
+                    _mouseDowndedControl = this;
+                    OnMouseDown(_mouseEventArgs);
+                }
+                else if (Input.MouseDown(MouseButton.Right) && !_isMouseDown)
+                {
+                    _mouseDowndedControl = this;
                     _mouseEventArgs.Button = MouseButton.Right;
                     OnMouseDown(_mouseEventArgs);
                 }
-                else if (Input.MouseDown(MouseButton.Midle))
+                else if (Input.MouseDown(MouseButton.Midle) && !_isMouseDown)
                 {
+                    _mouseDowndedControl = this;
                     _mouseEventArgs.Button = MouseButton.Midle;
                     OnMouseDown(new MouseEventArgs(MouseButton.Midle, Input.LastMouseState, Input.MouseState, gameTime));
                 }
-                else if (Input.MouseUp(MouseButton.Left) && _isMouseDown) OnMouseUp(_mouseEventArgs);
+
+                // mouse Up
+                else if (Input.MouseUp(MouseButton.Left) && _isMouseDown)
+                {
+                    _mouseDowndedControl.OnMouseUp(_mouseEventArgs);
+                    _mouseDowndedControl = null;
+                }
                 else if (Input.MouseUp(MouseButton.Right) && _isMouseDown)
                 {
                     _mouseEventArgs.Button = MouseButton.Right;
-                    OnMouseUp(_mouseEventArgs);
+                    _mouseDowndedControl.OnMouseUp(_mouseEventArgs);
+                    _mouseDowndedControl = null;
                 }
                 else if (Input.MouseUp(MouseButton.Midle) && _isMouseDown)
                 {
                     _mouseEventArgs.Button = MouseButton.Midle;
-                    OnMouseUp(_mouseEventArgs);
+                    _mouseDowndedControl.OnMouseUp(_mouseEventArgs);
+                    _mouseDowndedControl = null;
                 }
-                else if (prevMouse != mouse) OnMouseMove(_mouseEventArgs);
+
+                if (prevMouse != mouse) OnMouseMove(_mouseEventArgs);
                 else if (!_isInputMouse) OnMouseInput(_mouseEventArgs);
 
                 if (Input.LastMouseState.ScrollWheelValue != Input.MouseState.ScrollWheelValue)
@@ -234,25 +247,14 @@ namespace FormControl.Component.Controls
             utilizingControl.Enabled = Enabled;
             utilizingControl.Visibled = Visibled;
         }
-        private void Control_MouseMove(Control sender, MouseEventArgs e)
-        {
-            if (_isDraged && Input.MouseState.X != Input.LastMouseState.X
-                || Input.LastMouseState.Y != Input.MouseState.Y)
-                OnMouseDrag(e);
-        }
         private void Control_MouseUp(Control sender, MouseEventArgs e)
         {
-            if (_isDraged) _isDraged = false;
-            if (_isClick && _focus == this)
-            {
-                _isClick = false;
+            if (_isClick && Focused)
                 Click?.Invoke(this, e);
-            }
-            else _isClick = false;
+            _isClick = false;
         }
         private void Control_MouseDown(Control sender, MouseEventArgs e)
         {
-            if (!_isDraged) _isDraged = true;
             Focused = true;
             _isClick = true;
         }
@@ -288,6 +290,14 @@ namespace FormControl.Component.Controls
             _ticks.GameTime = gameTime;
             OnInvalidate(_ticks);
         }
+        /// <summary>
+        /// Вызывается после инициализации всех компонентов, но перед первым обновлением в цикле игры.
+        /// </summary>
+        protected virtual void BeginRun()
+        {
+            for (int i = Controls.Count - 1; i > -1; i--)
+                Controls[i].BeginRun();
+        }
         #endregion
 
         #region Public Properties
@@ -312,7 +322,7 @@ namespace FormControl.Component.Controls
             get { return _l; }
             set
             {
-                if (LockedTransformation || _l == value) return;
+                if (_l == value) return;
                 _l = value;
                 LocationChangeControl?.Invoke(this);
             }
@@ -330,6 +340,48 @@ namespace FormControl.Component.Controls
                 ResizeControl?.Invoke(this);
             }
         }
+
+        /// <summary>
+        /// Позиция контрола по X
+        /// </summary>
+        public float X => Location.X;
+        /// <summary>
+        /// Позиция контрола по Y
+        /// </summary>
+        public float Y => Location.Y;
+        /// <summary>
+        /// Ширина контрола
+        /// </summary>
+        public float Width
+        {
+            get { return Size.X; }
+            set { Size = new Vector2(value, Size.Y); }
+        }
+        /// <summary>
+        /// Высота контрола
+        /// </summary>
+        public float Height
+        {
+            get { return Size.Y; }
+            set { Size = new Vector2(Size.X, value); }
+        }
+        /// <summary>
+        /// Левый верхний угол контрола по X
+        /// </summary>
+        public float Left
+        {
+            get { return Location.X; }
+            set { Location = new Vector2(value, Location.Y); }
+        }
+        /// <summary>
+        /// Левый верхний угол контрола по Y
+        /// </summary>
+        public float Top
+        {
+            get { return Location.Y; }
+            set { Location = new Vector2(Location.X, value); }
+        }
+
         /// <summary>
         /// Глобальные координаты контрола, относительно окна
         /// </summary>
@@ -454,14 +506,6 @@ namespace FormControl.Component.Controls
         {
             MouseMove?.Invoke(this, e);
             _isBlockedMouse = true;
-        }
-        /// <summary>
-        /// Вызывает делегат движение мыши с зажатой кнопкой мыши
-        /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnMouseDrag(MouseEventArgs e)
-        {
-            MouseDrag?.Invoke(this, e);
         }
         /// <summary>
         /// Вызывает делегат входа мыши в контрол

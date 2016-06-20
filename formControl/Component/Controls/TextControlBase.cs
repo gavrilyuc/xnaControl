@@ -59,11 +59,6 @@ namespace FormControl.Component.Controls
             get { return LockedTransformation; }
             set
             {
-                if (value)
-                {
-                    Vector2 f = new Vector2(Border.BorderLenght + 2, Border.BorderLenght + 2) + TextBrush.Font.MeasureString(Text);
-                    if (Size != f) Size = f;
-                }
                 LockedTransformation = value;
                 AutoSizeChanged(this);
             }
@@ -72,35 +67,56 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Вызываетя тогда когда авто размер меняется
         /// </summary>
-        public event EventHandler AutoSizeChanged = delegate (Control sender) { };
+        public event EventHandler AutoSizeChanged = delegate { };
         /// <summary>
         /// Вызывается тогда когда изменяется текст
         /// </summary>
-        public event EventHandler TextChanged = delegate (Control sender) { };
+        public event EventHandler TextChanged = delegate { };
         /// <summary>
         /// Вызывается тогда когда изменяется Кисть для рисования текста
         /// </summary>
-        public event EventHandler TextBrushChanged = delegate (Control sender) { };
+        public event EventHandler TextBrushChanged = delegate { };
 
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
-        protected TextControlBase(TextBrush brush) : this(brush, new DefaultLayuout()) { }
+        protected TextControlBase() : this(new DefaultLayuout()) { }
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
         /// <param name="layout"></param>
-        protected TextControlBase(TextBrush brush, IControlLayout layout) : base(layout)
+        protected TextControlBase(IControlLayout layout) : base(layout)
         {
-            if (brush == null) return;
-            TextBrush = brush;
-            TextBrush.Text = Text = GetType().FullName;
             AutoSize = false;
             TextChanged += TextControlBase_TextChanged;
+            TextBrushChanged += TextControlBase_TextBrushChanged;
         }
 
+        /// <summary>
+        /// Вызывается после инициализации всех компонентов, но перед первым обновлением в цикле игры.
+        /// </summary>
+        protected override void BeginRun()
+        {
+            if (AutoSize)
+            {
+                int len = 0;
+                if (Border != null) len = Border.BorderLenght;
+
+                Vector2 sizeText = new Vector2(Text.Length * 15, 15);
+                if (TextBrush != null) sizeText = TextBrush.Font.MeasureString(Text);
+
+                Vector2 f = new Vector2(len + 2, len + 2) + sizeText;
+
+                SetControlLockedTransformation(this, false);
+                if (Size != f) Size = f;
+                SetControlLockedTransformation(this);
+            }
+            base.BeginRun();
+        }
+        private void TextControlBase_TextBrushChanged(Control sender)
+        {
+            TextBrush.Text = Text;
+        }
         private void TextControlBase_TextChanged(Control sender)
         {
             if (TextBrush == null) return;
