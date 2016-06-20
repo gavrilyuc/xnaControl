@@ -64,7 +64,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Свойства коретки
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)]
         public Coretka CoretkaInfo
         {
             get { return _coretka; }
@@ -77,20 +76,17 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Максимальная длина вводимого текста
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersCategory)]
         public int MaxLenght { get; set; } = -1;
         #endregion
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
-        public TextBox(TextBrush brush) : this(brush, new DefaultLayuout()) { }
+        public TextBox() : this(new DefaultLayuout()) { }
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        /// <param name="brush"></param>
         /// <param name="layout"></param>
-        public TextBox(TextBrush brush, IControlLayout layout) : base(brush, layout)
+        public TextBox(IControlLayout layout) : base(layout)
         {
             AutoSize = false;
             CoretkaInfo = new Coretka(Color.Red, 1);

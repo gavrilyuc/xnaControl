@@ -1,4 +1,5 @@
 ﻿using System;
+using FormControl.Component.Layout;
 using Microsoft.Xna.Framework;
 
 namespace FormControl.Component.Forms
@@ -6,7 +7,7 @@ namespace FormControl.Component.Forms
     /// <summary>
     /// Настройки формы
     /// </summary>
-    [Serializable] public class FormSettings
+    public class FormSettings
     {
         #region Only ALL Screen Sizer
         [NonSerialized] private static readonly Point[] _screens = {
@@ -43,6 +44,14 @@ namespace FormControl.Component.Forms
         /// Имя директории с контентом
         /// </summary>
         public string ContentDirectory { get; set; }
+        /// <summary>
+        /// Контейнер вмещения контролов
+        /// </summary>
+        public IControlLayout FormContolLayout { get; set; }
+        /// <summary>
+        /// Объект представления окна
+        /// </summary>
+        public GameWindow Window { get; set; }
         /// <summary>
         /// Конструкетор по умолчанию
         /// </summary>

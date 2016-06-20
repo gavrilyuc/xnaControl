@@ -15,7 +15,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Кисть для отрисовки Рамки.
         /// </summary>
-        [Category(PropertyGridCategoriesText.GraphicsCategory)] public BorderBrush Border
+        public BorderBrush Border
         {
             get { return _border; }
             set
@@ -28,7 +28,7 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Задняя часть Контрола
         /// </summary>
-        [Category(PropertyGridCategoriesText.GraphicsCategory)] public Brush Background
+        public Brush Background
         {
             get { return _background; }
             set

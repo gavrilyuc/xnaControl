@@ -33,11 +33,10 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        public ComboBox(TextBrush textBrush) : base(new ProcentLayout())
+        public ComboBox() : base(new ProcentLayout())
         {
             //if (textBrush == null) throw new ArgumentNullException($"ComboBox::{nameof(TextBrush)} is Null");
-
-            _arrow = new Button(textBrush) { Text = string.Empty };
+            _arrow = new Button { Text = string.Empty };
             _contaier = new ListBox() { AutoSize = true };
             Controls.Add(_arrow);
             Controls.Add(_contaier);

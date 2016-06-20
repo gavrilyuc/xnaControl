@@ -1,69 +1,94 @@
-﻿using FormControl.Component.Controls;
-using FormControl.Component.Layout;
-using FormControl.Input;
+﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using FormControl.Component.Controls;
+using FormControl.Component.Layout;
+using FormControl.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace FormControl.Component.Forms
 {
     /// <summary>
     /// Форма
     /// </summary>
-    public abstract class Form : Game, IWindow
+    public abstract class Form : Control, IWindow, IDisposable
     {
-        private readonly Control _formcontrol;
+        private readonly GameWindow _gameWindow;
 
+        #region Properties
         /// <summary>
-        /// Применить Изменения Расширения Экрана
+        /// Образец, для рисование 2D Объектов на Экране
         /// </summary>
-        protected void AplyScreenSize()
+        public Graphics Graphics2D => _gameWindow.Graphics2D;
+        /// <summary>
+        /// Размеры окна
+        /// </summary>
+        public Point Screen
         {
-            GraphicsDeviceManager.PreferredBackBufferWidth = Screen.X;
-            GraphicsDeviceManager.PreferredBackBufferHeight = Screen.Y;
-            _formcontrol.Size = new Vector2(Screen.X, Screen.Y);
-            GraphicsDeviceManager.ApplyChanges();
+            get { return _gameWindow.Screen; }
+            set
+            {
+                _gameWindow.Screen = value;
+            }
         }
         /// <summary>
         /// Девайс Менеджер (в шаблоне XNA в классе Game1 -> graphics)
         /// </summary>
-        protected GraphicsDeviceManager GraphicsDeviceManager { get; }
+        public GraphicsDevice GraphicsDevice => _gameWindow.GraphicsDevice;
         /// <summary>
-        /// Образец, для рисование 2D Объектов на Экране
+        /// Получает или устанавливает текущий ContentManager.
         /// </summary>
-        public Graphics Graphics2D { get; set; }
+        public ContentManager Content => _gameWindow.Content;
         /// <summary>
-        /// Размеры Окна
+        /// Получает начальные параметры в LaunchParameters.
         /// </summary>
-        public Point Screen { get; }
+        public LaunchParameters LaunchParameters => _gameWindow.LaunchParameters;
         /// <summary>
-        /// Список Контролов (В Основном используется для хранение Игровых Состояний)
+        /// Получает GameServiceContainer, в котором содержатся все поставщики услуг, имеющие отношение к Game.
         /// </summary>
-        public IControlLayout Controls => _formcontrol.Controls;
+        public GameServiceContainer Services => _gameWindow.Services;
+        /// <summary>
+        /// Указывает, является ли игра активным приложением в данный момент.
+        /// </summary>
+        public bool IsActive => _gameWindow.IsActive;
+        /// <summary>
+        /// Получает базовое окно операционной системы.
+        /// </summary>
+        public Microsoft.Xna.Framework.GameWindow GameWindow => _gameWindow.Window;
+        #endregion
 
-        #region Constructor
+        #region Events
+        /// <summary>
+        /// Возникает, когда для игры установлен фокус.
+        /// </summary>
+        public event EventHandler<EventArgs> Activated;
+        /// <summary>
+        /// Возникает при потере фокуса игрой.
+        /// </summary>
+        public event EventHandler<EventArgs> Deactivated;
+        /// <summary>
+        /// Возникает при выходе из игры.
+        /// </summary>
+        public event EventHandler<EventArgs> Exiting;
+        /// <summary>
+        /// Возникает при удалении игры.
+        /// </summary>
+        public event EventHandler<EventArgs> Disposed;
+        #endregion
+
+        private Form() { }
+        private Form(IControlLayout layout) : base(layout) { }
+
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
-        protected Form()
-            : this(
-                new FormSettings() {
-                    ContentDirectory = "Content", ScreenSize = new Point(300, 300), WindowMouseView = true,
-                    Windowed = true
-                }) { }
-        /// <summary>
-        /// Конструктор по умолчанию
-        /// </summary>
-        /// <param name="settings"></param>
-        protected Form(FormSettings settings) : this(settings, new DefaultLayuout()) { }
-        /// <summary>
-        /// Конструктор по умолчанию с указанием Определёного Контейнера
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="layoutControl"></param>
-        protected Form(FormSettings settings, IControlLayout layoutControl)
+        protected Form(FormSettings settings) : this(settings.FormContolLayout)
         {
-            GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            _formcontrol = new Control(this, layoutControl) { Visibled = true, Focused = true };
+            _gameWindow = settings.Window ?? new DefaultGameWindow();
+
+            #region Screen Size Corrections
             Point screen;
             screen.X = settings.ScreenSize.X
                        > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width
@@ -73,233 +98,199 @@ namespace FormControl.Component.Forms
                        > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
                 ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height
                 : settings.ScreenSize.Y;
-            Screen = screen;
+            _gameWindow.Screen = screen;
             Content.RootDirectory = settings.ContentDirectory;
-            GraphicsDeviceManager.IsFullScreen = !settings.Windowed;
-            IsMouseVisible = settings.WindowMouseView;
-            inicialize_events();
+            #endregion
+
+            ControlInicializer(_gameWindow);
+            Controls = settings.FormContolLayout;
+
+            _gameWindow.GraphicsDeviceManager.IsFullScreen = !settings.Windowed;
+            _gameWindow.IsMouseVisible = settings.WindowMouseView;
+
+            _gameWindow.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 100.0f);
+            _gameWindow.IsFixedTimeStep = false;
+            _gameWindow.GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             AplyScreenSize();
+            InicializeFormComponent();
         }
 
-        private void inicialize_events()
+        #region Inicialize Form Component
+        private void InicializeFormComponent()
         {
-            _formcontrol.MouseMove += __Form_MouseMove;
-            _formcontrol.MouseDown += __Form_MouseDown;
-            _formcontrol.MouseDrag += __Form_MouseDrag;
-            _formcontrol.Click += __Form_MouseClick;
-            _formcontrol.MouseUp += __Form_MouseUp;
-            _formcontrol.ScrollDelta += __Form_ScrollDelta;
-            _formcontrol.KeyDown += __Form_KeyDown;
-            _formcontrol.KeyPresed += __Form_KeyPresed;
-            _formcontrol.KeyUp += __Form_KeyUp;
-            _formcontrol.Paint += __Form_Paint;
-            _formcontrol.Invalidate += __Form_Invalidate;
+            _gameWindow.LoadContentAction = LoadContent;
+            _gameWindow.BeginRunAction = BeginRun;
+            _gameWindow.EndRunAction = EndRun;
+            _gameWindow.UpdateAction = Update;
+            _gameWindow.DrawAction = Draw;
+            _gameWindow.BeginDrawAction = BeginDraw;
+            _gameWindow.InitializeAction = Initialize;
+            _gameWindow.DisposeAction = Dispose;
+            _gameWindow.EndDrawAction = EndDraw;
+            _gameWindow.OnActivatedAction = OnActivated;
+            _gameWindow.OnDeactivatedAction = OnDeactivated;
+            _gameWindow.OnExitingAction = OnExiting;
+            _gameWindow.ShowMissingRequirementMessageAction = ShowMissingRequirementMessage;
+            _gameWindow.UnloadContentAction = UnloadContent;
 
-            _formcontrol.Location = new Vector2(0, 0);
-            _formcontrol.Size = new Vector2(Screen.X, Screen.Y);
+            _gameWindow.Activated += _gameWindow_Activated;
+            _gameWindow.Deactivated += _gameWindow_Deactivated;
+            _gameWindow.Exiting += _gameWindow_Exiting;
+            _gameWindow.Disposed += _gameWindow_Disposed;
         }
-
-        private void __Form_KeyPresed(Control sender, KeyEventArgs e) => OnKeyPresed(e);
-        private void __Form_Invalidate(Control sendred, TickEventArgs e) => OnInvalidate(e);
-        private void __Form_Paint(Control sendred, TickEventArgs e) => OnPaint(e);
-        private void __Form_KeyUp(Control sender, KeyEventArgs e) => OnKeyUp(e);
-        private void __Form_KeyDown(Control sender, KeyEventArgs e) => OnKeyDown(e);
-        private void __Form_ScrollDelta(Control sender, MouseEventArgs e) => OnScrollDelta(e);
-        private void __Form_MouseUp(Control sender, MouseEventArgs e) => OnMouseUp(e);
-        private void __Form_MouseClick(Control sender, MouseEventArgs e) => MouseClick?.Invoke(null, e);
-        private void __Form_MouseDrag(Control sender, MouseEventArgs e) => OnMouseDrag(e);
-        private void __Form_MouseDown(Control sender, MouseEventArgs e) => OnMouseDown(e);
-        private void __Form_MouseMove(Control sender, MouseEventArgs e) => OnMouseMove(e);
+        private void _gameWindow_Disposed(object sender, EventArgs e) => Disposed?.Invoke(sender, e);
+        private void _gameWindow_Exiting(object sender, EventArgs e)=> Exiting?.Invoke(sender, e);
+        private void _gameWindow_Deactivated(object sender, EventArgs e) => Deactivated?.Invoke(sender, e);
+        private void _gameWindow_Activated(object sender, EventArgs e) => Activated?.Invoke(sender, e);
         #endregion
 
-        #region Realize Form & Game Event's
+        #region Protected Realese Proxy Game Class
         /// <summary>
-        /// Отрисовка формы
+        /// Вызывается после конструктора, предназначен для загрузки ресурсов
         /// </summary>
-        /// <param name="gameTime"></param>
-        protected override void Draw(GameTime gameTime)
+        protected virtual void LoadContent()
         {
-            base.Draw(gameTime);
-            Graphics2D.Begin();
-            Graphics2D.GraphicsDevice.Clear(Color.Black);
-            _formcontrol.Draw(gameTime);
-            Graphics2D.End();
+            foreach (IContent ch in Controls.OfType<IContent>()) ch.LoadContent(Content);
         }
         /// <summary>
-        /// Обновленгия кадра формы
+        /// Вызывается после остановки цикла игры перед выходом.
         /// </summary>
-        /// <param name="gameTime"></param>
+        protected virtual void EndRun()
+        {
+        }
+        /// <summary>
+        /// Шаг обновления кадра
+        /// </summary>
+        /// <param name="gameTime">Время, прошедшее с момента последнего вызова Update.</param>
         protected override void Update(GameTime gameTime)
         {
             PKInputManager.GetInstance.Update();
             base.Update(gameTime);
-            _formcontrol.Update(gameTime); // update Form.
         }
         /// <summary>
-        /// Загрузка контента формы
+        /// Запускает создание кадра. За этим методом следуют вызовы методов Draw и EndDraw.
         /// </summary>
-        protected override void LoadContent()
+        protected virtual bool BeginDraw()
         {
-            Graphics2D = new Graphics(this.GraphicsDevice);
-            LoadResourses(null, new TickEventArgs(this, default(GameTime)));
-            base.LoadContent();
-            foreach (Control ch in Controls) (ch as IContent)?.LoadContent(Content);
+            return true;
         }
         /// <summary>
-        /// Выгрузка контента формы
+        /// Вызывается после создания объектов Game и GraphicsDevice, но до метода LoadContent.  Reference page contains code sample.
         /// </summary>
-        protected override void UnloadContent()
+        protected virtual void Initialize()
         {
-            base.UnloadContent();
-            foreach (Control ch in Controls) (ch as IContent)?.UnloadContent();
+            foreach (Control control in Controls)
+            {
+                IInicializator ch = control;
+                ch?.Inicialize();
+            }
         }
         /// <summary>
-        /// Инициализация Формы
+        /// Шаг рисования объектов
         /// </summary>
-        protected override void Initialize()
+        /// <param name="gameTime">Время, прошедшее с момента последнего вызова Draw.</param>
+        protected override void Draw(GameTime gameTime)
         {
-            base.Initialize();
-            Load?.Invoke(null);
-            foreach (Control ch in Controls) (ch as IInicializator)?.Inicialize();
+            GraphicsDevice.Clear(Color.Black);
+            Graphics2D.Begin();
+            base.Draw(gameTime);
+            Graphics2D.End();
+        }
+        /// <summary>
+        /// Освобождает все ресурсы, используемые классом Game.
+        /// </summary>
+        /// <param name="disposing">true для освобождения управляемых и неуправляемых ресурсов; false для освобождения только неуправляемых ресурсов.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+        /// <summary>
+        /// Завершает отрисовку кадра. Перед этим методом инициируются вызовы методов Draw и BeginDraw.
+        /// </summary>
+        protected virtual void EndDraw()
+        {
+        }
+        /// <summary>
+        /// Создает событие Activated. Переопределите этот метод, чтобы добавить код для обработки при получении игрой фокуса.
+        /// </summary>
+        /// <param name="sender">Объект Game.</param><param name="args">Аргументы события Activated.</param>
+        protected virtual void OnActivated(object sender, EventArgs args)
+        {
+        }
+        /// <summary>
+        /// Создает событие Deactivated. Переопределите этот метод, чтобы добавить код для обработки при потере игрой фокуса.
+        /// </summary>
+        /// <param name="sender">Объект Game.</param><param name="args">Аргументы события Deactivated.</param>
+        protected virtual void OnDeactivated(object sender, EventArgs args)
+        {
+        }
+        /// <summary>
+        /// Создает событие Exiting. Переопределите этот метод, чтобы добавить код для обработки при выходе из игры.
+        /// </summary>
+        /// <param name="sender">Объект Game.</param><param name="args">Аргументы события Exiting.</param>
+        protected virtual void OnExiting(object sender, EventArgs args)
+        {
+        }
+        /// <summary>
+        /// Используется для отображения сообщения об ошибке при отсутствии надлежащего графического устройства или звуковой платы.
+        /// </summary>
+        /// <param name="exception">Отображаемое исключение.</param>
+        protected virtual bool ShowMissingRequirementMessage(Exception exception)
+        {
+            return true;
+        }
+        /// <summary>
+        /// Вызывается, когда нужно выгрузить графические ресурсы. Переопределите этот метод для выгрузки любых связанных с игрой графических ресурсов.
+        /// </summary>
+        protected virtual void UnloadContent()
+        {
+            foreach (IContent ch in Controls.OfType<IContent>()) ch.UnloadContent();
         }
         #endregion
 
-        #region Event's
         /// <summary>
-        /// Вызывается когда форма загружена и нужно загрузить контролы и прочие Объекты
+        /// Применить Изменения Расширения Экрана
         /// </summary>
-        public event EventHandler Load;
-        /// <summary>
-        /// Вызывается когда зажимается кнопка мыши в пределах формы
-        /// </summary>
-        public event MouseEventHandler MouseDown;
-        /// <summary>
-        /// Вызывается когда отпускается кнопка мыши в пределах формы
-        /// </summary>
-        public event MouseEventHandler MouseUp;
-        /// <summary>
-        /// Вызывается когда происходит Нажатие и Отпускание мыши в пределах формы (Клик мышкой)
-        /// </summary>
-        public event MouseEventHandler MouseClick;
-        /// <summary>
-        /// Вызывается когда происходит Нажатие и Движение мыши в пределах формы
-        /// </summary>
-        public event MouseEventHandler MouseDrag;
-        /// <summary>
-        /// Вызывается когда происходит Движение мыши в пределах формы
-        /// </summary>
-        public event MouseEventHandler MouseMove;
-        /// <summary>
-        /// Вызывается когда покрутили Колесико на мышке в пределах Формы
-        /// </summary>
-        public event MouseEventHandler ScrollDelta;
-        /// <summary>
-        /// Вызывается когда происходит Нажатие на кнопку в пределах формы
-        /// </summary>
-        public event KeyEventHandler KeyDown;
-        /// <summary>
-        /// Вызывается когда происходит Отпускание кнопки в пределах формы
-        /// </summary>
-        public event KeyEventHandler KeyUp;
-        /// <summary>
-        /// Вызывается когда Кнопка зажата
-        /// </summary>
-        public event KeyEventHandler KeyPresed;
-        /// <summary>
-        /// Метод Рисования, Draw
-        /// </summary>
-        public event TickEventHandler Paint;
-        /// <summary>
-        /// Метод Обновление Кадра, Update
-        /// </summary>
-        public event TickEventHandler Invalidate;
-        /// <summary>
-        /// Метод Загрузки Ресурсов, LoadContent
-        /// </summary>
-        public event TickEventHandler LoadResourses;
-        #endregion
+        protected void AplyScreenSize()
+        {
+            _gameWindow.GraphicsDeviceManager.PreferredBackBufferWidth = Screen.X;
+            _gameWindow.GraphicsDeviceManager.PreferredBackBufferHeight = Screen.Y;
+            Size = new Vector2(Screen.X, Screen.Y);
+            _gameWindow.GraphicsDeviceManager.ApplyChanges();
+        }
 
-        #region Virtuals methods On Event's
+        #region Public Reaslese Proxy Game Class
         /// <summary>
-        /// Вызывает делегат нажатия кнопки мыши
+        /// Освободить ресурсы формы
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnMouseDown(MouseEventArgs e)
+        public void Dispose()
         {
-            MouseDown?.Invoke(null, e);
+            GC.SuppressFinalize(_gameWindow);
+            _gameWindow.Dispose();
         }
         /// <summary>
-        /// Вызывает делегат отпускания кнопки мыши
+        /// Вызывайте этот метод для инициализации игры, запуска цикла игры и начала обработки событий в игре.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnMouseUp(MouseEventArgs e)
-        {
-            MouseUp?.Invoke(null, e);
-        }
+        public void Run() => _gameWindow.Run();
         /// <summary>
-        /// Вызывает делегат движения мыши
+        /// Выполняет игру в режиме моделирования, что произойдет за один такт игровых часов; данный метод предназначен исключительно для отладки.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnMouseMove(MouseEventArgs e)
-        {
-            MouseMove?.Invoke(null, e);
-        }
+        public void RunOneFrame() => _gameWindow.RunOneFrame();
         /// <summary>
-        /// Вызывает делегат движение мыши с зажатой кнопкой мыши
+        /// Обновляет игровые часы и вызывает методы Update и Draw.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnMouseDrag(MouseEventArgs e)
-        {
-            MouseDrag?.Invoke(null, e);
-        }
+        public void Tick() => _gameWindow.Tick();
         /// <summary>
-        /// Вызывает делегат колесика
+        /// Сбрасывает счетчик прошедшего времени.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnScrollDelta(MouseEventArgs e)
-        {
-            ScrollDelta?.Invoke(null, e);
-        }
+        public void ResetElapsedTime() => _gameWindow.ResetElapsedTime();
         /// <summary>
-        /// Вызывает делегат нажатия клавиши
+        /// Предотвращает вызовы Draw до следующего Update.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnKeyDown(KeyEventArgs e)
-        {
-            KeyDown?.Invoke(null, e);
-        }
+        public void SuppressDraw() => _gameWindow.SuppressDraw();
         /// <summary>
-        /// Вызывает делегат отпускания клавиши
+        /// Вызывает выход из игры.
         /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnKeyUp(KeyEventArgs e)
-        {
-            KeyUp?.Invoke(null, e);
-        }
-        /// <summary>
-        /// Вызывает делегат зажатия клавиши
-        /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnKeyPresed(KeyEventArgs e)
-        {
-            KeyPresed?.Invoke(null, e);
-        }
-        /// <summary>
-        /// Вызывает делегат Обновления кадра Формы
-        /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnInvalidate(TickEventArgs e)
-        {
-            Invalidate?.Invoke(null, e);
-        }
-        /// <summary>
-        /// Вызывает делегат Отрисовки кадра Формы
-        /// </summary>
-        /// <param name="e"></param>
-        protected internal virtual void OnPaint(TickEventArgs e)
-        {
-            Paint?.Invoke(null, e);
-        }
+        public void Exit() => _gameWindow.Exit();
         #endregion
     }
 }

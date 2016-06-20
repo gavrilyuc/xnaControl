@@ -18,7 +18,6 @@ namespace FormControl.Component.Controls
         /// Выделеный Объект
         /// </summary>
         ///
-        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public int SelectedIndex
         {
             get { return _sel; }
@@ -32,7 +31,6 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Выделеный Контрол
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public Control SelectedControl
         {
             get
@@ -44,12 +42,10 @@ namespace FormControl.Component.Controls
         /// <summary>
         /// Автоматически подстраивать размер контрола
         /// </summary>
-        [Category(PropertyGridCategoriesText.UsersOtherCategory)]
         public bool AutoSize { get; set; } = true;
         /// <summary>
         /// Размер для каждего Объекта внутри списка
         /// </summary>
-        [Category(PropertyGridCategoriesText.BasicCategory)]
         public Vector2 ItemSize
         {
             get { return _itemSize; }

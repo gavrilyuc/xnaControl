@@ -47,7 +47,7 @@ namespace FormControl.Drawing.Brushes
             if (Texture != null)
                 graphics.Draw(Texture, rectangle, Color);
         }
-        /// <summary></summary><returns></returns>
+        /// <summary/>
         protected override Brush GetInctance => new SolidTextureBrush(Texture, Color);
     }
 }

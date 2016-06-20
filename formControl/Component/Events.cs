@@ -96,6 +96,14 @@ namespace FormControl.Component
         /// </summary>
         public Vector2 Coord { get; internal set; }
         /// <summary>
+        /// FLOAT : Координаты курсора по X
+        /// </summary>
+        public float X => Coord.X;
+        /// <summary>
+        /// FLOAT : Координаты курсора по Y
+        /// </summary>
+        public float Y => Coord.Y;
+        /// <summary>
         /// INT32 : Координаты курсора
         /// </summary>
         public Point PointCoord => new Point((int)Math.Round(Coord.X, 0, MidpointRounding.AwayFromZero), (int)Math.Round(Coord.Y, 0, MidpointRounding.AwayFromZero));

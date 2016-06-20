@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,30 +24,32 @@ namespace demo
 
         public Game1(FormSettings settings) : base(settings)
         {
-            // Form Constructor
             Paint += Game1_Paint;
             Invalidate += Game1_Invalidate;
-            Load += Game1_Load;
-            LoadResourses += Game1_LoadResourses;
-
-            MouseClick += Game1_MouseClick;
+            Click += Game1_MouseClick;
         }
 
-        private void Game1_Load(Control sender)
+        protected override void LoadContent()
         {
+            // Load Content
+            _baseFont = Content.Load<SpriteFont>("Arial");
+
             // Form Inicialize & Generate GUI
             // and Other Inicializator...
             // xna method: Inicialize
             _fps = new FpsControl(_baseFont);
 
-            _p = new Panel() {
+            _p = new Panel
+            {
                 Location = new Vector2(200, 100),
                 Size = new Vector2(400, 300),
                 Background = new SolidColorBrush(Color.White),
                 Border = new DefaultBorderBrush(1, Color.Blue)
             };
             DefaultTextBrush defaultBrush = new DefaultTextBrush(_baseFont, Color.Black);
-            _b = new Button(defaultBrush) {
+            _b = new Button()
+            {
+                TextBrush = defaultBrush,
                 Location = new Vector2(10, 10),
                 Size = new Vector2(150, 40),
                 Text = "TMP Button",
@@ -60,18 +63,23 @@ namespace demo
             _b.Click += b_MouseClick;
             _p.Click += p_MouseClick;
 
-            _textBox = new TextBox(new DefaultTextBrush(_baseFont, Color.Purple)) {
+            _textBox = new TextBox()
+            {
+                TextBrush = new DefaultTextBrush(_baseFont, Color.Purple),
                 AutoSize = false,
                 Border = new DefaultBorderBrush(1, Color.Lime),
                 Background = new SolidColorBrush(Color.Silver),
                 Location = new Vector2(250, 250),
                 Size = new Vector2(100, 30),
+                Text = "Sample Text",
                 MaxLenght = 13
             };
 
             // Loadding Screen (Only Game-State)
-            LoadingScreen l = new LoadingScreen(this, _baseFont) {
-                BackGroundThread = new GameThread(delegate {
+            LoadingScreen l = new LoadingScreen(this, _baseFont)
+            {
+                BackGroundThread = new GameThread(delegate
+                {
                     System.Threading.Thread.Sleep(3000);// Sleep 3 seconds. :D
 
                     _isDrawing = true;// Example variable.
@@ -91,25 +99,22 @@ namespace demo
 
             l.Show();// Show Game State
             //(GameState Object).Change("stateName"); - Change State
+            base.LoadContent();
         }
 
         private void b_MouseClick(Control sender, MouseEventArgs e)
         {
-            Window.Title = "[Button] Mouse Click: " + (j++).ToString();
-        }
-        private void Game1_LoadResourses(Control sendred, TickEventArgs e)
-        {
-            // Load Content
-            _baseFont = e.ContentManager.Load<SpriteFont>("Arial");
+            GameWindow.Title = "[Button] Mouse Click: " + (j++);
         }
         private void Game1_MouseClick(Control sender, MouseEventArgs e)
         {
-            Window.Title = "[Form] Mouse Click: " + (j++).ToString();
+            GameWindow.Title = "[Form] Mouse Click: " + (j++);
         }
-        int j = 0;
+
+        int j;
         private void p_MouseClick(Control sender, MouseEventArgs e)
         {
-            Window.Title = "[Panel] Mouse Click: " + (j++).ToString();
+            GameWindow.Title = "[Panel] Mouse Click: " + (j++);
         }
 
         private string _keyPresedsDraw;
@@ -124,7 +129,7 @@ namespace demo
             string tmp = PKInputManager.GetInstance.KeyboardState.GetPressedKeys().Aggregate("You Key Down: ",
                 (current, key) => current + (key + Separator));
             tmp = tmp.TrimEnd(Separator);
-            
+
             if (tmp == string.Empty) tmp = "hi! I showed downed keys";
 
             _keyPresedsDraw = tmp;
@@ -144,4 +149,3 @@ namespace demo
         }
     }
 }
-
